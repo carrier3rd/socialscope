@@ -7,7 +7,7 @@ description: Find repeated talking points, cross-community spread, coordinated a
 
 Traces how talking points move between communities (subreddits on Reddit, hashtags or conversations on X, across both platforms at once) and flags accounts whose behavior looks automated or coordinated. Built from three sources: the social-media-intelligence journalism skill (workflow and ethics), the QUT Coordination Network Toolkit (time-windowed co-similarity, co-link, co-reply and co-retweet networks), and platform-specific bot signals.
 
-**Code.** The steps below call `scripts/` and `socialscope/` (plus `socialscope_pulls.ipynb`), which ship in the skill package `social-coordination.zip`. If they aren't in the session, ask the user to attach that zip before running anything that imports them.
+**Code.** The steps below call `scripts/` and `socialscope/` (plus `socialscope_pulls.ipynb`), which ship in the skill package `social-coordination.zip` and in the private GitHub repo carrier3rd/socialscope. If they aren't in the session, ask the user to attach that zip (or attach the repo) before running anything that imports them.
 
 ## Ground rules
 

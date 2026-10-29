@@ -530,3 +530,22 @@ Thread context covered 92,610 threads. Reply times exist for 278 of 398 bots (th
 **What held:** both reply-timing rules are clean, with zero control hits. **What failed:** their reach. reply\_window and fast\_replies together fire for 35 bots, and only 4 of those weren't already flagged by account age, posts\_only or tourist. The frozen any-of-four combination misses the 5% bar because uniform\_length adds control hits; the v7 primary tier, which drops uniform\_length to support, passes.
 
 **Effect on v7:** reply timing stays primary because it costs nothing in false alarms and catches some aged accounts that age rules miss, but it adds about 1 point of catch here. Weights unchanged; the next fresh round (Oct 20–26 with thread context) is the real test.
+
+## Round 3 results, part 2: thread context (scored Oct 29, 2026)
+
+Thread context arrived for the Oct 20–26 round. Reply times exist for all 34 pooled bots and 299 of 300 controls. Intervals are 95% Wilson. My guess stated before scoring was that reply\_window would come in near 5% of bots, under the frozen 10%.
+
+| Rule | Predicted bots | Actual bots (n=34) | Predicted controls | Actual controls (n=300) | Passes 5×, under 5%? |
+| --- | --- | --- | --- | --- | --- |
+| reply\_window | 10% | 3% (1–15%) | 0–1% | 0.7% (0–2%) | No, 4× on one bot |
+| fast\_replies | — | 0% (0–10%) | — | 0.3% | No |
+| any of reply\_window, tourist, uniform\_length, young\_account | 60% | 44% (29–61%) | 8% | 8% (5–12%) | No, controls over 5% |
+| v7 primary tier | — | 44% (29–61%) | — | 5.0% (3–8%) | Borderline |
+
+**What failed:** reply timing in the drama subs. The two reply rules flagged 1 bot that nothing else caught and 3 controls that nothing else flagged, so they pushed the primary tier's false alarms from 4% to 5%. Drama-sub bots are days-old accounts with few comments; ordinary regulars who refresh a live thread trip the reply window about as often. Earlier-round bots (n=10) tripped neither rule.
+
+**Bot-rich vs drama subs:** the same rules caught 9% of Reddit-wide bots at 0% of controls. The pooled fit across both rounds (932 accounts, other v7 weights held fixed) gives reply timing a weight of 1.65, close to the placeholder 1.80, but that fit leans on the bot-rich bots.
+
+## v7.1 scoring change (Oct 29, 2026, before the next fresh round)
+
+reply\_window and fast\_replies move from PRIMARY to SUPPORT with weight 1.65 each. Alone they no longer flag an account; next to a primary flag they raise confidence. PRIMARY is now young\_account, young\_account\_true, posts\_only, tourist. Every other weight is unchanged. Applied to round 3, the primary tier drops to 4% of controls with no bots lost except the one reply-only catch. The next fresh week tests v7.1 as frozen here.

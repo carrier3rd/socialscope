@@ -72,19 +72,19 @@ def _political(r):
     return str(r.get("subreddit") or "").lower() in POLSUB or bool(POL_RE.search((r.get("body") or "") + " " + (r.get("title") or "")))
 # Secondary rules (v4 + v5) never flag an account by themselves; they only add weight to an account a primary rule
 # already flagged. Primary = the rules that have passed a fair test or are under test as main signals.
-PRIMARY = ("fast_replies", "reply_window", "young_account", "young_account_true", "posts_only", "tourist")
+PRIMARY = ("young_account", "young_account_true", "posts_only", "tourist")
 # v7 scoring (frozen Oct 29 2026 after the bot-rich round, for the next fresh round). Rules that held up across
 # rounds 2, 3 and bot-rich flag an account (PRIMARY); rules with some lift support it (SUPPORT); the rest are still
 # computed and reported but carry no weight (RETIRED). WEIGHTS come from a logistic regression on 472 labelled bots
 # and 799 controls across the three rounds; held out one round at a time, the score catches 38-64% of bots at
 # 2-3% false alarms. Account age carries most of the weight.
-SUPPORT = ("rapid_fire", "low_engagement", "uniform_length", "hit_and_run", "stock_name")
+SUPPORT = ("fast_replies", "reply_window", "rapid_fire", "low_engagement", "uniform_length", "hit_and_run", "stock_name")
 RETIRED = ("farm_subs", "self_repeat", "ai_style", "metronome", "topic_hopper", "dormant_then_burst", "gibberish_name",
            "escaped_text", "quoted_comments", "mash_comment", "scam_domain", "md_structure", "flat_sentences",
            "political_pivot", "sub_shift", "batch_id", "state_media_link", "ai_vocab")
 WEIGHTS = {"_intercept": -2.62, "young_account": 4.30, "young_account_true": 0.0, "posts_only": 1.89, "tourist": 1.80,
            "rapid_fire": 1.34, "low_engagement": 1.15, "uniform_length": 1.13, "hit_and_run": 1.02, "stock_name": 0.58,
-           "reply_window": 1.80, "fast_replies": 1.80}   # reply rules: not in the fit (no context yet); set equal to tourist
+           "reply_window": 1.65, "fast_replies": 1.65}   # v7.1: fitted on round 3 + bot-rich with thread context, other weights held fixed
 AI_RE = re.compile(r"\b(delve|delves|delving|tapestry|nuanced?|landscape|realm|multifaceted|pivotal|garner|bolster|"
                    r"commendable|testament|underscores?|intricate|navigate|navigating|fostering|foster|crucial|seamless|"
                    r"paramount|leverage|furthermore|moreover|additionally|ultimately|in conclusion|it's important to|"

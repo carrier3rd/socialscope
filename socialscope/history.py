@@ -72,7 +72,19 @@ def _political(r):
     return str(r.get("subreddit") or "").lower() in POLSUB or bool(POL_RE.search((r.get("body") or "") + " " + (r.get("title") or "")))
 # Secondary rules (v4 + v5) never flag an account by themselves; they only add weight to an account a primary rule
 # already flagged. Primary = the rules that have passed a fair test or are under test as main signals.
-PRIMARY = ("fast_replies", "reply_window", "uniform_length", "young_account", "young_account_true")
+PRIMARY = ("fast_replies", "reply_window", "young_account", "young_account_true", "posts_only", "tourist")
+# v7 scoring (frozen Oct 29 2026 after the bot-rich round, for the next fresh round). Rules that held up across
+# rounds 2, 3 and bot-rich flag an account (PRIMARY); rules with some lift support it (SUPPORT); the rest are still
+# computed and reported but carry no weight (RETIRED). WEIGHTS come from a logistic regression on 472 labelled bots
+# and 799 controls across the three rounds; held out one round at a time, the score catches 38-64% of bots at
+# 2-3% false alarms. Account age carries most of the weight.
+SUPPORT = ("rapid_fire", "low_engagement", "uniform_length", "hit_and_run", "stock_name")
+RETIRED = ("farm_subs", "self_repeat", "ai_style", "metronome", "topic_hopper", "dormant_then_burst", "gibberish_name",
+           "escaped_text", "quoted_comments", "mash_comment", "scam_domain", "md_structure", "flat_sentences",
+           "political_pivot", "sub_shift", "batch_id", "state_media_link", "ai_vocab")
+WEIGHTS = {"_intercept": -2.62, "young_account": 4.30, "young_account_true": 0.0, "posts_only": 1.89, "tourist": 1.80,
+           "rapid_fire": 1.34, "low_engagement": 1.15, "uniform_length": 1.13, "hit_and_run": 1.02, "stock_name": 0.58,
+           "reply_window": 1.80, "fast_replies": 1.80}   # reply rules: not in the fit (no context yet); set equal to tourist
 AI_RE = re.compile(r"\b(delve|delves|delving|tapestry|nuanced?|landscape|realm|multifaceted|pivotal|garner|bolster|"
                    r"commendable|testament|underscores?|intricate|navigate|navigating|fostering|foster|crucial|seamless|"
                    r"paramount|leverage|furthermore|moreover|additionally|ultimately|in conclusion|it's important to|"
@@ -299,7 +311,7 @@ def score(history, groups, context=None, out_dir="history_scores", reveal="none"
         f["batch_id"] = a in batch
         nflags = sum(f.values())
         prim = [k for k in PRIMARY if f.get(k)]
-        sec = [k for k in V4 + V5 + V6 if f.get(k)]
+        sec = [k for k in SUPPORT if f.get(k)]
         tier = "primary+secondary" if prim and sec else "primary" if prim else ""
         tally[g]["_primary"] += bool(prim)
         tally[g]["_prim_sec"] += bool(prim and sec)
@@ -308,11 +320,15 @@ def score(history, groups, context=None, out_dir="history_scores", reveal="none"
         tally[g]["_v2_2plus"] += sum(v for k, v in f.items() if k not in V1 and k not in V3 and k not in V4 and k not in V5 and k not in V6) >= 2
         tally[g]["_v5_any"] += any(f[k] for k in V5)
         tally[g]["_v6_any"] += any(f[k] for k in V6)
-        tally[g]["_prim_sec_nostock"] += bool(prim) and any(f.get(k) for k in V4 + V5 + V6 if k != "stock_name")
+        tally[g]["_prim_sec_nostock"] += bool(prim) and any(f.get(k) for k in SUPPORT if k != "stock_name")
+        import math
+        z = WEIGHTS["_intercept"] + sum(w for k, w in WEIGHTS.items() if k != "_intercept" and f.get(k))
+        bscore = 1 / (1 + math.exp(-z))
+        tally[g]["_score_high"] += bscore >= 0.5
         tally[g]["_v4_any"] += any(f[k] for k in V4 if k != "stock_name")
         for k, v in f.items():
             tally[g][k] += v
-        rows.append({"account": show(a), "group": g, "screen_reasons": why, "flags": nflags, "tier": tier,
+        rows.append({"account": show(a), "group": g, "screen_reasons": why, "flags": nflags, "tier": tier, "bot_score": round(bscore, 3),
                      "flag_list": "+".join(k for k, v in f.items() if v), **m})
     os.makedirs(out_dir, exist_ok=True)
     rows.sort(key=lambda r: (-r["flags"], r["group"]))
@@ -334,7 +350,8 @@ def score(history, groups, context=None, out_dir="history_scores", reveal="none"
     md.append("| 2+ v2 flags | reply_window, tourist, hit_and_run, uniform_length | " + " | ".join(pct(g, "_v2_2plus") for g in order) + " |")
     md.append("| any v4 flag | any v4 rule except stock_name | " + " | ".join(pct(g, "_v4_any") for g in order) + " |")
     md.append("| any primary | " + ", ".join(PRIMARY) + " | " + " | ".join(pct(g, "_primary") for g in order) + " |")
-    md.append("| primary + secondary | a primary flag plus any v4/v5 flag | " + " | ".join(pct(g, "_prim_sec") for g in order) + " |")
+    md.append("| bot_score 0.5+ | weighted score (history.WEIGHTS) of at least 0.5 | " + " | ".join(pct(g, "_score_high") for g in order) + " |")
+    md.append("| primary + secondary | a primary flag plus any SUPPORT flag | " + " | ".join(pct(g, "_prim_sec") for g in order) + " |")
     md.append("| primary + secondary (excluding stock_name) | | " + " | ".join(pct(g, "_prim_sec_nostock") for g in order) + " |")
     md.append("| any v6 flag | political_pivot, sub_shift, low_engagement, batch_id | " + " | ".join(pct(g, "_v6_any") for g in order) + " |")
     md.append("| any v5 flag | ai_vocab, md_structure, flat_sentences, state_media_link | " + " | ".join(pct(g, "_v5_any") for g in order) + " |")
@@ -349,7 +366,7 @@ def score(history, groups, context=None, out_dir="history_scores", reveal="none"
                "Precision at an assumed share of bots among active accounts. The catch and false-alarm rates come from the table above; "
                "* means no control tripped it, so precision is unmeasured, not perfect. Bot share in these subs is unknown: 1% and 5% bracket it.", "",
                "| Flag | Bots caught | Controls flagged | Precision if 1% are bots | if 5% are bots |", "|---|---|---|---|---|"]
-        keys = list(RULES) + ["_primary", "_prim_sec", "_prim_sec_nostock"]
+        keys = list(RULES) + ["_primary", "_prim_sec", "_prim_sec_nostock", "_score_high"]
         for k in keys:
             tp = sum(tally[g][k] for g in bots)
             if tp:

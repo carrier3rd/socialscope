@@ -51,7 +51,7 @@ def tag(inputs, subs=SIX, out_dir="bundles", start=None, end=None):
             week.append((a, s, r.get("score") or 0))
         for k, rx in RX.items():
             if rx.search(b):
-                hits.append((a, k, s, t, i, r.get("link_id")))
+                hits.append((a, k, s, t, i, r.get("link_id"), r.get("score") or 0))
     home = {}
     for a, c in acts.items():
         best = max(subs, key=lambda x: c[x])
@@ -166,7 +166,7 @@ def amplifiers(acc, window=3600, min_threads=3, out_dir="bundles"):
     amplifier_pairs.csv (hashed names). Ordinary allies in one argument rarely repeat across many threads."""
     import hashlib
     by = defaultdict(list)
-    for a, k, s, t, i, link in acc["hits"]:
+    for a, k, s, t, i, link, *_ in acc["hits"]:
         if link:
             by[(link, k)].append((t, a))
     pairs = defaultdict(set)
@@ -187,6 +187,46 @@ def amplifiers(acc, window=3600, min_threads=3, out_dir="bundles"):
     with open(os.path.join(out_dir, "amplifier_pairs.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=["seeder", "amplifier", "threads"]); w.writeheader(); w.writerows(rows)
     print(f"{len(rows)} seeder->amplifier pairs repeating in {min_threads}+ threads")
+    return rows
+
+
+def reception(acc, bundles_of=None, min_n=5, out_dir="bundles"):
+    """How positions carried into a sub by visitors score there, against locals taking the same position in that sub
+    and against the sub's locals overall. Writes reception.csv and prints how concentrated carrying is.
+    Feed it weekly comments only (tag(..., start=, end=)): history rows have no comparable local baseline."""
+    subs, home = acc["subs"], acc["home"]
+    sub_loc = defaultdict(list)
+    for a, s, score in acc["week"]:
+        if home.get(a) == s:
+            sub_loc[s].append(score)
+    seen, cell, carriers = set(), defaultdict(lambda: ([], [], Counter())), Counter()
+    for a, k, s, t, i, link, score in acc["hits"]:
+        b = (bundles_of or {}).get(k, k)
+        if s not in subs or (i, b) in seen:
+            continue
+        seen.add((i, b))
+        car = home.get(a) != s
+        loc, cv, frm = cell[(b, s)]
+        (cv if car else loc).append(score)
+        if car:
+            frm[home.get(a)] += 1; carriers[a] += 1
+    low = lambda v: round(100 * sum(x < 1 for x in v) / len(v)) if v else ""
+    rows = []
+    for (b, s), (loc, cv, frm) in sorted(cell.items(), key=lambda x: -len(x[1][1])):
+        if len(cv) < min_n:
+            continue
+        rows.append({"position_or_bundle": b, "into": s, "carried": len(cv), "carried_median": median(cv),
+                     "carried_pct_at_or_below_0": low(cv), "local_same_position": len(loc),
+                     "local_same_median": median(loc) if loc else "", "local_same_pct_at_or_below_0": low(loc),
+                     "sub_locals_pct_at_or_below_0": low(sub_loc[s]),
+                     "from": "; ".join(f"{h} {n}" for h, n in frm.most_common(3))})
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, "reception.csv"), "w", newline="") as fh:
+        if rows:
+            w = csv.DictWriter(fh, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+    takers = {a for a, *_ in acc["hits"]}
+    print(f"{len(carriers)} of {len(takers)} position-taking accounts carried a position into another sub; "
+          f"median {median(carriers.values()) if carriers else 0} carried comments each")
     return rows
 
 

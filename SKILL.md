@@ -227,9 +227,14 @@ For "which opinions travel together" and "who carries them between communities".
 acc = bundles.tag([weekly comment zips, history comment zips], out_dir="bundles")
 bundles.cooccur(acc)     # pairs.csv (lift and z vs null), bundles.json
 bundles.crossover(acc)   # visitors.csv (who comments where, how they score), carried.csv (positions taken across subs)
+bundles.reception(acc)   # reception.csv: carried positions' scores vs locals holding the same position
 ```
 
 Use the curveball null (`cooccur` does): accounts that talk politics hit many patterns including opposites, so raw co-occurrence makes everything look linked. Home sub = the six-sub sub where the account comments most. Oct 2026 result: three political bundles (anti-Trump mainstream; anti-Hasan liberal; pro-Palestine), h3 drama separate from all politics, 93-99% of each sub's comments from its own regulars, LSF as the hub, and Hasan regulars visiting r/h3h3productions as the one clearly hostile crossing (34% of their comments at 0 or below vs 10% for locals).
+
+**Sample bias.** Histories pulled for a bot study over-represent the shortlist: in Oct 2026, 538 history accounts supplied half of all position hits. Build bundles from weekly comments plus histories of the random control accounts only. One week alone is too thin (most accounts show one position), so histories are needed; control histories kept every main link (pro-Palestine pair z 5.7, anti-Trump with anti-ICE 4.7, anti-tankie with Hasan-critical 3.2, h3 drama negative with all politics) and dropped one that came only from shortlist accounts (anti-ICE with Gaza genocide, z 3.4 to 0.3). Louvain splits move between runs; report pair z-scores, not just the bundle lists.
+
+**Reception and carriers.** `bundles.reception(acc)` (weekly comments only) compares positions carried into a sub by visitors against locals taking the same position there and the sub's locals overall (`reception.csv`). Oct 13–26, 2026: only 4% of position comments in the six subs were carried in by visitors (104 of 2,496 position-taking accounts, median one carried comment each, no heavy hitters). Destiny regulars carrying Hasan criticism into LSF scored like LSF locals saying the same; visitors' h3-drama takes in r/h3h3productions were downvoted twice as often as locals' (19% vs 7%). Pollination mostly runs through the rest of Reddit: random six-sub regulars voiced 79% of their pro-Palestine and 86% of their mainstream anti-Trump comments outside the six subs (r/politics, r/askanything, r/nyt, r/stupidpeoplefacebook, r/thedavidpakmanshow), against 49% for Hasan criticism and 30% for h3 drama.
 
 **Coordination checks on positions:** `bundles.amplifiers(acc)` lists seeder-to-amplifier pairs (one account asserts a position, another asserts the same one in the same thread within an hour, across 3+ threads: the EEAS seeder/amplifier pattern). `bundles.mixed(acc)` lists accounts asserting opposed positions (a lead for for-hire accounts; usually a person arguing both sides). Oct 2026 first run: 0 amplifier pairs, 18 mixed accounts.
 
@@ -259,7 +264,7 @@ Use the curveball null (`cooccur` does): accounts that talk politics hit many pa
 | `history_scores/comparison.md`, `accounts.csv`, `flagged_shortlist.csv`, `context_summary.md` | Stage-2 flag rates per group, per-account flags and metrics, shortlist accounts with 2+ flags, what the threads they joined were about |
 | `claims/candidates.csv`, `spread.csv`, `matches.csv`, `accounts.csv` | Claim candidates, per-claim spread (asserts, disputes, subs, scores), every matching item with stance, account pattern levels with an authenticity (AI-style writing) column |
 | `sources/state_media.csv`, `state_media.md` | Links to state media and state-linked proxy sites, by outlet, sub and hashed account |
-| `bundles/pairs.csv`, `bundles.json`, `visitors.csv`, `carried.csv` | Position pairs vs the null, the bundles, who comments outside their home sub and how they score, positions carried across subs |
+| `bundles/pairs.csv`, `bundles.json`, `visitors.csv`, `carried.csv`, `reception.csv` | Position pairs vs the null, the bundles, who comments outside their home sub and how they score, positions carried across subs |
 | `matched/<name>_threads.csv`, `<name>_comments.zip` | News-sub threads picked by topic and their comments |
 | `calibration.csv` | Known bots found in the data with the signals they did or didn't trip |
 

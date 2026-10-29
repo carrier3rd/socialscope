@@ -1,0 +1,17 @@
+# Never commit Reddit data, username lists or the hashing salt
+*.zip
+*.zst
+*.jsonl
+users_to_pull*.txt
+groups.csv
+*_oldest.json
+.socialscope_salt
+pulls/
+histories/
+context/
+matched/
+history_scores/
+out/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

@@ -515,3 +515,18 @@ A logistic regression on every labelled bot and control from rounds 2, 3 and bot
 The score trades some catch for fewer false alarms; account age does most of the work.
 
 **New structure:** PRIMARY (flags an account) = young\_account, young\_account\_true, posts\_only, tourist, reply\_window, fast\_replies. SUPPORT (raises confidence) = rapid\_fire, low\_engagement, uniform\_length, hit\_and\_run, stock\_name. RETIRED (reported, no weight) = everything else. On bot-rich, the new primary tier catches 88% of bots at 4% of controls, primary + support 60% at 2%, primary + support without stock\_name 17% at 0%. These are in-sample; the next fresh round tests them.
+
+## Bot-rich round results, part 2: thread context (scored Oct 29, 2026)
+
+Thread context covered 92,610 threads. Reply times exist for 278 of 398 bots (the rest never replied in a thread we pulled) and all 200 controls. Same 398 bots and 200 controls as part 1; intervals are 95% Wilson.
+
+| Rule | Predicted bots | Actual bots | Predicted controls | Actual controls | Passes 5×, under 5%? |
+| --- | --- | --- | --- | --- | --- |
+| reply\_window | 15% | 8% (6–11%) | 0–1% | 0% (0–2%) | Yes, but half the predicted catch |
+| fast\_replies | — | 5% (3–7%) | — | 0% (0–2%) | Yes, but rare |
+| any of reply\_window, tourist, uniform\_length, young\_account\_true | 80% | 89% (86–92%) | 7% | 6.5% (4–11%) | No, controls over 5% |
+| v7 primary tier (any primary rule) | — | 89% (86–92%) | — | 4% (2–8%) | Yes, 22× |
+
+**What held:** both reply-timing rules are clean, with zero control hits. **What failed:** their reach. reply\_window and fast\_replies together fire for 35 bots, and only 4 of those weren't already flagged by account age, posts\_only or tourist. The frozen any-of-four combination misses the 5% bar because uniform\_length adds control hits; the v7 primary tier, which drops uniform\_length to support, passes.
+
+**Effect on v7:** reply timing stays primary because it costs nothing in false alarms and catches some aged accounts that age rules miss, but it adds about 1 point of catch here. Weights unchanged; the next fresh round (Oct 20–26 with thread context) is the real test.

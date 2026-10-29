@@ -452,3 +452,66 @@ Histories for all 644 accounts arrived; every one had history. Thread context ha
 Expected to pass the 5× bar: sub\_shift and low\_engagement. Bot Bouncer bans many repurposed aged accounts and spam that nobody upvotes.
 
 **Considered and dropped:** reply pairs (two accounts replying to each other 3+ times, the OpenAI "Sneer Review" pattern of posting and replying to yourself). Round 2 had 120 such pairs, almost all regulars arguing; one involved a known bot. Kept as a review metric only.
+
+## Bot-rich round results, part 1 (scored Oct 29, 2026, before thread context)
+
+Histories for 398 of 400 Bot Bouncer October bans and all 200 controls. Only 2 bots came back empty, against a prediction of about 25%: Arctic Shift keeps an account's archive after Reddit suspends it. Thread context is still pulling, so reply\_window and fast\_replies wait for part 2. Intervals are 95% Wilson. Reminder: these bots come from all of Reddit and the controls from the six drama subs, so some differences reflect the two populations, not botness. Drama regulars, for example, trip dormant\_then\_burst (14%) and topic\_hopper (14%) far more than the bots.
+
+| Rule | Predicted bots | Actual bots | Predicted controls | Actual controls | Passes 5×, under 5%? |
+| --- | --- | --- | --- | --- | --- |
+| young\_account\_true | 70% | 87% (83–90%) | 3% | 4% (2–8%) | Yes, 22× |
+| young\_account | 70% | 87% | 5% | 4% | Yes |
+| tourist | 15% | 11% (8–15%) | 0% | 0% (0–2%) | Yes |
+| uniform\_length | 15% | 7% | 3% | 2% | No, 3.5× |
+| farm\_subs | 10% | 0% | 0% | 0% | No: never fires |
+| self\_repeat | 8% | 1% | 0% | 0% | Too rare |
+| ai\_style | 2% | 0% | 0% | 0% | Never fires |
+| any of tourist, uniform\_length, young\_account\_true (reply\_window pending) | 80% | 89% (86–92%) | 7% | 6% (4–11%) | No, controls over 5% |
+| posts\_only (v4) | 30% | 22% (19–27%) | 4% | 0% (0–2%) | Yes |
+| stock\_name (v4) | 50% | 59% | 30% | 34% | No, as expected |
+| gibberish\_name (v4) | 10% | 4% | 4% | 5% | No |
+| escaped\_text, quoted\_comments, mash\_comment, scam\_domain (v4) | 2–4% each | 0% | 0–2% | 0% | Never fire |
+| any v4 except stock\_name | 40% | 23% | 10% | 6% | No, 4× |
+| ai\_vocab (v5) | 10% | 1% | 1% | 0% | Too rare |
+| md\_structure, flat\_sentences (v5) | 3–5% | 0–1% | 0–1% | 0–1% | No |
+| low\_engagement (v6) | 15% | 5% (3–7%) | 3% | 0% (0–3%) | Yes, but rare |
+| political\_pivot, sub\_shift, batch\_id (v6) | 3–8% | 0–1% | 0.5–1% | 0–2% | No |
+| any primary | 75% | 89% | 7% | 6% | No, controls over 5% |
+| primary + secondary | 50% | 63% | 2% | 4% | Yes, 16× |
+| primary + secondary without stock\_name | — | 26% | — | 1% | Yes |
+
+**What held:** account age is the backbone, now confirmed on 398 bots: 87% caught at 4% false alarms. posts\_only (from the community guide) and tourist pass cleanly with zero control hits. Unplanned: rapid\_fire, a v1 rule that never fired in the drama subs, caught 7% of these bots and 1 control.
+
+**What failed:** almost every content and writing rule. Karma-farm subs, self-repeats, AI-style quips, AI vocabulary, markdown, keyboard mash, scam domains and escaped text are all near zero for Reddit-wide bots in 2026. The government-report rules (pivot, sub\_shift, batch\_id) also stayed near zero; Bot Bouncer's bans skew toward fresh accounts, not the aged bought accounts those reports describe.
+
+**Precision check:** at a 1% bot rate, young\_account\_true is right about 18% of the time and the primary + secondary tier about 14%; without stock\_name, 21% but at a quarter of the catch. Flags remain leads.
+
+## v7 scoring: weights from three rounds (frozen Oct 29, 2026, for the next fresh round)
+
+A logistic regression on every labelled bot and control from rounds 2, 3 and bot-rich (472 bots, 799 controls) set the weights. Testing used each round held out in turn.
+
+| Rule | Weight |
+| --- | --- |
+| young\_account | +4.30 |
+| posts\_only | +1.89 |
+| tourist | +1.80 |
+| rapid\_fire | +1.34 |
+| low\_engagement | +1.15 |
+| uniform\_length | +1.13 |
+| hit\_and\_run | +1.02 |
+| sub\_shift | +0.73 |
+| stock\_name | +0.58 |
+| gibberish\_name | +0.46 |
+| topic\_hopper | +0.28 |
+| ai\_vocab | +0.03 |
+| dormant\_then\_burst | −0.59 |
+
+| Held-out round | AUC | Score at \~3% false alarms | Account age alone |
+| --- | --- | --- | --- |
+| Round 2 | 0.82 | 42% caught, 1.7% false alarms | 52% at 2.7% |
+| Round 3 | 0.72 | 38% at 2.7% | 41% at 4.0% |
+| Bot-rich | 0.94 | 64% at 2.5% | 87% at 4.0% |
+
+The score trades some catch for fewer false alarms; account age does most of the work.
+
+**New structure:** PRIMARY (flags an account) = young\_account, young\_account\_true, posts\_only, tourist, reply\_window, fast\_replies. SUPPORT (raises confidence) = rapid\_fire, low\_engagement, uniform\_length, hit\_and\_run, stock\_name. RETIRED (reported, no weight) = everything else. On bot-rich, the new primary tier catches 88% of bots at 4% of controls, primary + support 60% at 2%, primary + support without stock\_name 17% at 0%. These are in-sample; the next fresh round tests them.

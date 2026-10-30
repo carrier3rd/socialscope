@@ -549,3 +549,24 @@ Thread context arrived for the Oct 20–26 round. Reply times exist for all 34 p
 ## v7.1 scoring change (Oct 29, 2026, before the next fresh round)
 
 reply\_window and fast\_replies move from PRIMARY to SUPPORT with weight 1.65 each. Alone they no longer flag an account; next to a primary flag they raise confidence. PRIMARY is now young\_account, young\_account\_true, posts\_only, tourist. Every other weight is unchanged. Applied to round 3, the primary tier drops to 4% of controls with no bots lost except the one reply-only catch. The next fresh week tests v7.1 as frozen here.
+
+## Round 4: political and rival subs, v7.1 as frozen (scored Oct 30, 2026)
+
+Test week: Oct 20–26 in 14 subs none of the earlier rounds touched (Asmongold, Conservative, PoliticalCompassMemes, LeftoversH3, thedavidpakmanshow, thebulwark, neoliberal, samharris, dsa, TankieTheDeprogram, IsraelPalestine, Palestine, ukraine; h3snark was on break). Same design as round 3: stage-1 shortlist (300 strongest of 3,288 flagged), 300 random controls that tripped no screen rule, and every Bot Bouncer bot listed Sep 1–Oct 19 that was active that week. Full histories, up to 1,000 items, for all 617; none missing. Check date Oct 27. No thread context was pulled, so reply_window and fast_replies can't fire; both are SUPPORT rules under v7.1, so the primary tier is unaffected. Predictions were committed before any history was pulled (`docs/round4-predictions.md`). Intervals are 95% Wilson.
+
+| Prediction | Result | Verdict |
+| --- | --- | --- |
+| 1. 15–40 known bots active, mostly in LeftoversH3, neoliberal, PCM | 17; LeftoversH3 4, Asmongold 3, PCM 3, thebulwark 2, neoliberal 2 | Held |
+| 2. Under 10 later bots (listed Oct 20–28) in the pool | 0 pulled (3 in the whole week, none sampled) | Held |
+| 3. v7.1 primary tier: 35% of known bots, 3–5% of controls | 5/17 = 29% (13–53%); controls 1/300 = 0.3% (0–2%) | Bots held; controls see note |
+| 4. young_account: about 30% of bots, 3% of controls | 29% (13–53%); controls 0.3% | Bots held; controls see note |
+| 5. Top 10% by bot_score holds over half the known bots | 2 of 17 | Missed |
+| 6. Right-leaning subs no higher known-bot share | 7.5 per 10k active accounts vs 4.6 for the rest (7 and 10 bots) | Inconclusive: higher, but far too few to tell apart |
+
+**Controls understate the age rules' false alarms.** Controls are drawn from accounts no screen rule flagged, and the newest-3% rule catches almost every young account: 240 of the 259 shortlisted on that rule were under 90 days old. That removes young accounts from the control pool by construction. Estimated across all active accounts, young_account fires for about 3% (0.93 × 3% via the newest-3% slice, plus the 0.3% seen in controls), the same as rounds 2–3. At a 1% bot rate that is about 9% precision, unchanged. The same exclusion applied in earlier rounds; it shows up more here because these older subs have fewer young accounts outside the newest slice. Next round: draw controls at random from all active accounts, not only unflagged ones.
+
+**Prediction 5 failed for a structural reason.** The scored pool is half shortlist, and 82% of the shortlist is young, so young human accounts fill the top decile. Against random controls only, bot_score separates known bots weakly (AUC 0.65).
+
+**Most of these bots don't look like the drama-sub bots.** Read by eye (names withheld): 12 of 17 have 400–1,250-item histories going back years (earliest items from 2013 to 2022), spread over 70–255 subs, with ordinary-looking conversation. One shows a clear hijack pattern: years of game-sub comments, then spam solicitations. Two look like karma farms (one-word compliments across ~200 subs; song-request subs). Several read as long-standing humans, which means either bought or hijacked aged accounts whose human history dominates 1,000 items, or Bot Bouncer listings that were wrong or since reversed. v6's sub_shift, built for resold accounts, fired for none of them. Account age, the only strong rule, can't reach this type, which is why the primary tier catches 29% here against 44% in the drama subs.
+
+**What this means for v7.1:** nothing in this round justifies a weight change, and none is made. Age-based rules keep working at a stable false-alarm rate, but political subs carry a second bot type, aged accounts, that no current rule detects. Detecting it needs the ban date (to compare behavior before and after) or a rule on recent change within a long history. Draft that rule before the September rounds and freeze it there.

@@ -136,3 +136,32 @@ Draft fixes for the failing patterns are in `socialscope/positions_v2_drafts.py`
 ## Limits
 
 Twelve-item accuracy reads carry wide intervals (about ±25 points). Home sub is the sub, among the 19 with data, where an account comments most, so history accounts' homes lean toward the drama subs they were sampled from. Scores are first-save snapshots.
+
+# September baseline: is the Ethan week typical? (scored Oct 30, 2026)
+
+Two quiet weeks, Sep 8–14 and Sep 22–28, all comments in the same 18 subs (complete hourly coverage), run with the same code and the frozen tier 1 pattern rule, against Oct 20–26. Predictions were committed before the data was opened (`docs/september-baseline-predictions.md`). Pair z-scores combine each week with the same 2,378 account histories, so they share part of their data across weeks.
+
+| Measure | Oct 20–26 | Sep 8–14 | Sep 22–28 |
+| --- | --- | --- | --- |
+| r/LeftoversH3 comments | 67,110 | 10,519 | 11,451 |
+| r/h3h3productions comments | 184,187 | 10,754 | 8,296 |
+| r/LivestreamFail comments | 64,216 | 25,702 | 25,847 |
+| Drama regulars' share of r/thedavidpakmanshow | 24.2% | 26.3% | 18.6% |
+| … of r/dsa | 17.7% | 5.9% | 5.1% |
+| … of r/samharris | 11.1% | 7.6% | 8.2% |
+| … of r/LeftoversH3 | 17.0% | 9.5% | 13.7% |
+| Hasan regulars' comments in r/h3h3productions | 280 (34% at or below 0) | 12 | 2 |
+| Position comments carried across subs | 6.7% | 8.5% | 7.5% |
+| anti_trump + anti_ice (z) | 6.6 | 3.4 | 3.2 |
+| gaza_genocide + anti_tankie | 5.7 | 1.2 | 1.6 |
+| hasan_neg + anti_tankie | 5.5 | 2.1 | 2.7 |
+| gaza_genocide + anti_zionist | 5.1 | 3.6 | 4.0 |
+
+1. Volume collapses in quiet weeks: **held.** LeftoversH3 runs at a sixth of the Ethan week, r/h3h3productions at a twentieth.
+2. Overlap into politics subs is structural: **partly.** r/thedavidpakmanshow's Destiny-regular overlap holds in every week (19–26%), so it's structural. r/dsa's 18% was the event: 5–6% in September. r/samharris sits at 8% in quiet weeks, just around the bar.
+3. LeftoversH3's regular share falls below 12%: **split**, 9.5% and 13.7%.
+4. Hasan-to-h3 hostile crossing: **untestable.** Hasan regulars barely comment in r/h3h3productions outside drama weeks (12 and 2 comments). The crossing is real but happens only when the drama brings them there.
+5. All four links above z = 2 each week: **missed for one.** Three hold in every week. gaza_genocide + anti_tankie falls to 1.2 and 1.6: its Oct strength came from the drama week's Hasan and Gaza arguments.
+6. Carried positions under 6%: **missed**, 7.5–8.5% (and 6.7% in the Oct week measured the same way, which also counts history rows posted in the 18 subs; the earlier 4% covered the five drama subs only).
+
+**What this changes:** the three political bundles are real, but their tightness in the Oct write-up was inflated by the drama week. Read single-week bundle results as a mix of structure and event. The pakman overlap belongs in the structure column; the dsa overlap and the gaza + anti_tankie link belong in the event column.

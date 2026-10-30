@@ -570,3 +570,30 @@ Test week: Oct 20–26 in 14 subs none of the earlier rounds touched (Asmongold,
 **Most of these bots don't look like the drama-sub bots.** Read by eye (names withheld): 12 of 17 have 400–1,250-item histories going back years (earliest items from 2013 to 2022), spread over 70–255 subs, with ordinary-looking conversation. One shows a clear hijack pattern: years of game-sub comments, then spam solicitations. Two look like karma farms (one-word compliments across ~200 subs; song-request subs). Several read as long-standing humans, which means either bought or hijacked aged accounts whose human history dominates 1,000 items, or Bot Bouncer listings that were wrong or since reversed. v6's sub_shift, built for resold accounts, fired for none of them. Account age, the only strong rule, can't reach this type, which is why the primary tier catches 29% here against 44% in the drama subs.
 
 **What this means for v7.1:** nothing in this round justifies a weight change, and none is made. Age-based rules keep working at a stable false-alarm rate, but political subs carry a second bot type, aged accounts, that no current rule detects. Detecting it needs the ban date (to compare behavior before and after) or a rule on recent change within a long history. Draft that rule before the September rounds and freeze it there.
+
+## aged_drift fresh test: Sep 8–14, bots banned afterwards (scored Oct 30, 2026)
+
+Design and predictions: `docs/aged-drift-predictions.md`, committed with the frozen rule before any history was pulled. 53 accounts active Sep 8–14 in the 18 subs that Bot Bouncer banned between Sep 15 and Oct 28 (later bots: the real test, since nothing listed them during the week), 17 banned Sep 1–14 (known bots), and 400 controls drawn at random from all 49,978 active accounts (one had no history). Up to 1,000 items each. Intervals 95% Wilson.
+
+Two readings, because the first scoring showed a leak. With the check at each account's last pulled item, a later bot's last 30 days are the days just before its ban, after the test week. The honest point-in-time test cuts every history at Sep 15.
+
+| | Later bots (n=53) | Known bots (n=17) | Random controls (n=398) |
+| --- | --- | --- | --- |
+| Aged (100+ items over a year+), as of Sep 15 | 68% (55–79%) | 29% | 83% |
+| aged_drift as of Sep 15, aged accounts | 5/36 = 14% (6–29%) | 2/5 | 15/330 = 5% (3–7%) |
+| aged_drift at last activity, aged accounts | 17/37 = 46% (31–62%) | 1/5 | 18/342 = 5% (3–8%) |
+| v7.1 primary tier as of Sep 15 | 21% | 59% | 5% |
+| v7.1 primary tier at last activity | 19% | 59% | 3% |
+| primary OR aged_drift as of Sep 15 | 30% | 71% | 8% |
+
+| Prediction | Result | Verdict |
+| --- | --- | --- |
+| 1. 10–20 of the 53 later bots are aged | 36 (68%) | Missed badly |
+| 2. aged_drift: 20–35% of aged bots, 4–7% of aged controls, fails the bar | as of Sep 15: 14% vs 5%, fails; at last activity: 46% vs 5.3%, fails by 0.3 points | Bar call held; catch missed in opposite directions |
+| 3. aged_drift under 3% of all controls | 4% | Missed |
+| 4. Primary tier 40–60% of later bots, 3–5% of random controls | 21%; controls 5% | Bots missed, controls held |
+| 5. primary OR aged_drift adds under 10 points | +9 points as of Sep 15 | Held |
+
+**What this shows.** Bots that are active but not yet banned are mostly old accounts: two in three. The age rules that carried every earlier round catch about a fifth of them; they work on the bots Bot Bouncer has already found, which skew new. aged_drift sees nothing unusual during the test week (14% vs 5%), but in the 30 days before the ban, 46% of these accounts move into subreddits they never used, scattered across many, against 5% of random accounts. The drift happens right before the ban, not before the week.
+
+**Consequence for the method.** A one-week snapshot can't catch most of the bots active in it. Catching aged accounts takes repeated checks: re-score the same accounts every week or two and flag the ones whose recent activity drifts. In that use aged_drift is the strongest rule found so far for this bot type, with two cautions: its false alarms (5% per check) add up over repeated checks, and the 46% comes from the same 37 bots that exposed the leak, so it needs a forward test where accounts are re-checked on a schedule before anyone knows their fate. aged_drift stays a candidate with no weight; no v7.1 weights change. Random controls also give the first clean false-alarm rate for the primary tier: 3–5%.

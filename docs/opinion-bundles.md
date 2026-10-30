@@ -165,3 +165,18 @@ Two quiet weeks, Sep 8–14 and Sep 22–28, all comments in the same 18 subs (c
 6. Carried positions under 6%: **missed**, 7.5–8.5% (and 6.7% in the Oct week measured the same way, which also counts history rows posted in the 18 subs; the earlier 4% covered the five drama subs only).
 
 **What this changes:** the three political bundles are real, but their tightness in the Oct write-up was inflated by the drama week. Read single-week bundle results as a mix of structure and event. The pakman overlap belongs in the structure column; the dsa overlap and the gaza + anti_tankie link belong in the event column.
+
+## v2 pattern fixes: blind read on September (Oct 30, 2026)
+
+The draft fixes in `socialscope/positions_v2_drafts.py` were written from the Oct 20–26 misses, then tested on fresh comments: up to 30 random matches per pattern from the tier 1 subs in the two September weeks, shuffled, sub hidden.
+
+| Pattern | v1 on Oct 20–26 | v2 on September | Decision |
+| --- | --- | --- | --- |
+| elon_neg | 6/12 | 9/13 = 69% (42–87%) | not adopted: too few matches to clear 65% with confidence |
+| anti_tankie | 7/12 | 17/26 = 65% (46–81%) | not adopted: at the bar, interval wide |
+| anti_ice | 6/12 | 16/25 = 64% (45–80%) | not adopted |
+| anti_trump | 7/12 | 18/30 = 60% (42–75%) | not adopted |
+| hasan_neg | 5/12 | 12/30 = 40% (25–58%) | rejected |
+| hila_pos | 2/12 | 1/4 | rejected |
+
+v2 nudges four patterns up by 5–20 points, and none clears the bar. The remaining misses are the hard kind: people quoting a slogan to mock it ("fuck ICE" as the sign of a crank), MAGA insults aimed at a relative with no judgment of Trump, sarcasm tagged /s, and one German-train "fuck ICE". In political subs hasan_neg mostly catches people describing or mocking Hasan's critics. These six patterns stay out of the tier 1 subs; the frozen tier 1 rule stands. Regex position-tagging has reached its limit in political subs, and opinion there should be measured by blind stance coding, as with the Trump sheet.

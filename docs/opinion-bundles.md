@@ -114,7 +114,7 @@ Coordination checks: 0 seeder-to-amplifier pairs across 3+ threads.
 
 ## Trump sentiment by sub (blind stance coding)
 
-216 Trump mentions (40 per sub, all 16 in Asmongold), coded blind with the sentiment rubric, sub hidden until coding finished. Predictions were written beforehand. Single coder so far; a second coder on 20% of items is still needed.
+216 Trump mentions (40 per sub, all 16 in Asmongold), coded blind with the sentiment rubric, sub hidden until coding finished. Predictions were written beforehand. A second coder, given only the rubric and 50 random items (23%), agreed on 88% with Cohen's kappa 0.78 against the corrected codes (84%, kappa 0.72 against the original ones). Four of the six disagreements were comments about the Trump administration or campaign (installed loyalists, a gerrymandering push, Hegseth, campaign prosecutions) that the first coder counted as A and the second as N. The first coder's 'against' shares may run a few points high; no conclusion depends on it. Next rubric: the administration's own actions count as judging Trump; his supporters' and allies' actions don't.
 
 | Sub | Side-takers | For | Against | Net (predicted) |
 | --- | --- | --- | --- | --- |

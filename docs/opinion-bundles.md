@@ -125,7 +125,13 @@ Coordination checks: 0 seeder-to-amplifier pairs across 3+ threads.
 | neoliberal | 18 | 0% | 100% | −100 (−80) |
 | thebulwark | 29 | 0% | 100% | −100 (−90) |
 
+Correction after unblinding: six comments criticizing MAGA as a movement without judging Trump were coded A, against the rubric's rule for fans and movements. Recoded to N through a corrections file: Conservative moves from +24 (21 side-takers) to +30 (20), dsa from −90 (10) to −88 (8), thebulwark keeps −100 on 26 side-takers instead of 29. No conclusion changes.
+
 Every cell is under 30 side-takers. The PCM result is the clear miss: its 95% interval for favorable runs 1–25%, far from the mixed sub expected. In r/Conservative the critical comments scored higher (median 5) than the favorable ones (median −1), on 7 and 12 comments.
+
+## Next
+
+Draft fixes for the failing patterns are in `socialscope/positions_v2_drafts.py` (negations for hila_pos, Hasan-hater mockery for hasan_neg, capitalized ICE, no bare "tankie"). They replace nothing until a fresh blind read on other weeks passes them. September baseline weeks (Sep 8–14, Sep 22–28) will show which of this week's results come from the Ethan story and which are structural.
 
 ## Limits
 

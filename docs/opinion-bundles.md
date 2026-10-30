@@ -55,3 +55,78 @@ The six subs barely exchange positions directly. Their regulars carry political 
 ## Limits
 
 Patterns catch explicit stances only, so quieter agreement and sarcasm are missed. Scores are snapshots; the earlier hostile-crossing check held on second-save rows, but these reception cells weren't rechecked that way. Histories are capped at 1,000 items, and the controls are random among accounts active in two specific weeks.
+
+# Tier 1 expansion: 14 more subs, Oct 20–26, 2026 (scored Oct 29)
+
+Data: every comment from Oct 20–26 in r/Asmongold, Conservative, PoliticalCompassMemes, LeftoversH3, h3snark, thedavidpakmanshow, thebulwark, neoliberal, samharris, dsa, TankieTheDeprogram, IsraelPalestine, Palestine and ukraine (215,673 comments after removing mod and bot accounts), the five drama subs for the same week, and the 2,378 account histories from the bot study. r/h3snark was on break all week: its only comments are AutoModerator notices, so it contributes nothing. The drama-sub pulls stop around 11:25 PM on Oct 26 (Arctic Shift timeouts), missing the last half hour of the week.
+
+## Predictions (stated before opening the data)
+
+1. Six-sub regulars write under 3% of comments in most new subs; LeftoversH3 and h3snark are the exceptions, above 15%.
+2. A pro-Trump pattern clears the 65% accuracy bar now that right-leaning subs are in the data; Ukraine-skeptic still fails.
+3. The three political bundles hold, a fourth right-leaning bundle appears, and h3 drama stays unlinked from politics.
+4. anti_zionist and gaza_genocide stay linked (z above 2) among accounts whose home is r/Palestine or r/IsraelPalestine.
+5. Visitors from left-leaning subs are buried in r/Conservative (over 40% of their comments at 0 or below); r/IsraelPalestine treats carried pro-Palestine comments like locals'.
+
+## Pattern accuracy in the new subs
+
+Blind read of 12 random matches per pattern from the tier 1 subs, sub hidden until all 180 codes were written. Accuracy is community-specific: six of the 13 patterns validated on the drama subs fall under 65% here.
+
+| Pattern | Accuracy | | Pattern | Accuracy |
+| --- | --- | --- | --- | --- |
+| ukraine_support | 12/12 | | anti_trump | 7/12 |
+| israel_defense | 7/9 | | anti_tankie | 7/12 |
+| hasan_pos | 9/12 | | elon_neg | 6/12 |
+| anti_zionist | 9/12 | | anti_ice | 6/12 |
+| vote_blue | 9/12 | | hasan_neg | 5/12 (LeftoversH3 mocks Hasan haters) |
+| ethan_neg | 8/12 | | hila_pos | 2/12 ("I don't feel bad for Hila") |
+| gaza_genocide | 8/12 | | trump_pos (draft) | 3/12 (TDS mostly appears mocked) |
+| | | | dem_left_critique (draft) | 2/12 |
+| | | | ukraine_skeptic (draft) | 1/3, 3 matches in 215k comments |
+
+Rule frozen before the bundles run: comments in the tier 1 subs use only the seven patterns that passed there; the drama subs and histories keep all 13.
+
+## Results
+
+**1. Overlap: missed.** Share of each sub's comments written by accounts with 3+ comments in the five drama subs that week:
+
+| Sub | Share | | Sub | Share |
+| --- | --- | --- | --- | --- |
+| thedavidpakmanshow | 24.2% | | neoliberal | 3.0% |
+| dsa | 17.7% | | Asmongold | 3.0% |
+| LeftoversH3 | 17.0% | | IsraelPalestine | 3.1% |
+| samharris | 11.1% | | Palestine | 2.8% |
+| thebulwark | 6.6% | | ukraine | 1.2% |
+| PoliticalCompassMemes | 5.6% | | Conservative | 0.4% |
+| TankieTheDeprogram | 4.1% | | | |
+
+LeftoversH3 came in as predicted, but the drama subs reach much further into the liberal and left politics subs than expected. r/thedavidpakmanshow is mostly a Destiny-regular overlap (54 of 83 regular accounts have r/Destiny as home); r/dsa's comes from Hasan regulars, though five accounts write 73% of it.
+
+**2. Pro-Trump pattern: missed.** It read 3/12 accurate. Ukraine-skeptic failed as predicted, on reach as much as accuracy.
+
+**3. Bundles: held, with the fourth bundle untestable.** Pair z-scores match the Oct 29 run: anti_trump + anti_ice 6.6 (was 5.4), gaza_genocide + anti_tankie 5.7 (5.5), hasan_neg + anti_tankie 5.5 (4.5), gaza_genocide + anti_zionist 5.1 (6.4). Louvain merged pro-Palestine and anti-Hasan into one community this time, which the earlier write-up warned it does; the pairs are what replicate. h3 drama positions stay at or below chance with every political position. No right-leaning pattern passed, so a right-leaning bundle couldn't appear.
+
+**4. Gaza link inside the Palestine subs: missed.** Among 187 position-taking accounts whose home is r/Palestine or r/IsraelPalestine, 161 used genocide language, so co-occurring with anti_zionist is no longer beyond chance (7 observed vs 6.9 expected, z 0.1). The link is real across the whole population but saturates where nearly everyone holds the position.
+
+**5. Hostile crossings: untestable for Conservative, reversed for IsraelPalestine.** r/Conservative limits most threads to flaired users, and left-leaning regulars wrote 3 comments there all week. In r/IsraelPalestine, visitors whose home is r/Palestine had 52% of comments at 0 or below against 16% for locals (21 comments, small). The established hostile crossing replicated: Hasan regulars in r/h3h3productions at 34% vs 10% for locals (280 comments; 33% on Oct 13–26), and LeftoversH3 regulars there fare almost as badly (29%, 1,027 comments).
+
+Coordination checks: 0 seeder-to-amplifier pairs across 3+ threads.
+
+## Trump sentiment by sub (blind stance coding)
+
+216 Trump mentions (40 per sub, all 16 in Asmongold), coded blind with the sentiment rubric, sub hidden until coding finished. Predictions were written beforehand. Single coder so far; a second coder on 20% of items is still needed.
+
+| Sub | Side-takers | For | Against | Net (predicted) |
+| --- | --- | --- | --- | --- |
+| Conservative | 21 | 57% | 33% | +24 (+40) |
+| Asmongold | 6 | 67% | 33% | +33 (+20) |
+| PoliticalCompassMemes | 19 | 5% | 95% | −89 (−10) |
+| dsa | 10 | 0% | 90% | −90 (−85) |
+| neoliberal | 18 | 0% | 100% | −100 (−80) |
+| thebulwark | 29 | 0% | 100% | −100 (−90) |
+
+Every cell is under 30 side-takers. The PCM result is the clear miss: its 95% interval for favorable runs 1–25%, far from the mixed sub expected. In r/Conservative the critical comments scored higher (median 5) than the favorable ones (median −1), on 7 and 12 comments.
+
+## Limits
+
+Twelve-item accuracy reads carry wide intervals (about ±25 points). Home sub is the sub, among the 19 with data, where an account comments most, so history accounts' homes lean toward the drama subs they were sampled from. Scores are first-save snapshots.

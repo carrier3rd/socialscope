@@ -35,6 +35,11 @@ Repo: carrier3rd/socialscope (private). Detail lives in docs/; this page is the 
 - **America framing:** in the four left subs, about 28-39% of comments that take a stance treat America as bad in
   itself (two coders). This is concentrated in Tankie (55-67%) and Hasan (36-45%). It is rare in dsa (12-14%), and the
   rest is criticism of specific policies.
+- **Commentators (docs/commentator-valence-predictions.md):** coded from transcripts. Both Hasan and Destiny attack the
+  Trump administration. What separates them is how they treat the US as a system: Hasan's system-level judgments are 8 of
+  9 negative, Destiny's 4 of 5 positive or defensive. Destiny's positive-or-mixed share is 63%, Hasan's 4-14%. In
+  Destiny's videos most of the anti-US framing comes from the people he debates. Gemini can't read his sarcasm, so his
+  segments were coded by Claude.
 - **Crossover:** Destiny regulars are the biggest outside group in pakman every week. Hostile crossings run into the h3
   subs and into neoliberal. Pakman and atrioc are the most open subs.
 - **Glossary:** docs/glossary.md and data/glossary.csv, 56 community marker terms.

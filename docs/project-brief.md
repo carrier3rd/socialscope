@@ -50,8 +50,8 @@ Repo: carrier3rd/socialscope (private). Detail lives in docs/; this page is the 
   Its sample goes to Gemini for labeling.
 - **Forward test (docs/forward-test-predictions.md):** frozen model, 2,000 unlisted in-sub accounts. Histories are
   pulling now. A scheduled check runs Dec 1 and needs a Bot Bouncer pull for Nov 3-30 first.
-- **Commentator study, still to do:** Pakman and Bulwark transcripts, coding r/Destiny comments about America, and the
-  agreement check.
+- **Commentator study:** parked as out of scope (Nov 2). The Hasan vs Destiny result stands as a side finding. The
+  Pakman and Bulwark transcripts and the r/Destiny coding are not planned.
 - **Oct 27 week:** a top-up rerun is due after Nov 3, for Nov 2 and thebulwark comments.
 
 ## How work gets done

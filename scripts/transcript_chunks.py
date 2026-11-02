@@ -37,7 +37,16 @@ def clean_vtt(path):
 
 def chunk(a):
     os.makedirs(a.out, exist_ok=True)
-    files = sorted(glob.glob(os.path.join(a.src, "**", "*.vtt"), recursive=True))
+    allf = sorted(glob.glob(os.path.join(a.src, "**", "*.vtt"), recursive=True))
+    # yt-dlp writes several caption tracks per video (en, en-en, en-orig...). Keep one per video:
+    # prefer en-orig (the original auto-captions), then en, then whatever else exists.
+    rank = lambda f: (0 if ".en-orig." in f else 1 if re.search(r"\.en\.vtt$", f) else 2, f)
+    pick = {}
+    for f in allf:
+        vid = os.path.basename(f).split(".")[0]
+        if vid not in pick or rank(f) < rank(pick[vid]):
+            pick[vid] = f
+    files = [pick[v] for v in sorted(pick)]
     kept = []
     for f in files:
         base = os.path.basename(f).split(".")[0]
@@ -61,7 +70,7 @@ def chunk(a):
         with open(os.path.join(a.out, f"BUNDLE_{i//a.bundle+1:03d}.txt"), "w") as fh:
             for name, text in kept[i:i + a.bundle]:
                 fh.write(f"=== CHUNK {name} ===\n{text}\n\n")
-    print(f"{len(files)} transcripts -> {len(kept)} chunks mentioning the US -> {-(-len(kept)//a.bundle)} bundles in {a.out}")
+    print(f"{len(allf)} caption files, {len(files)} videos -> {len(kept)} chunks mentioning the US -> {-(-len(kept)//a.bundle)} bundles in {a.out}")
 
 
 def norm(s):

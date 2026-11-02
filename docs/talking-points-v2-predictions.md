@@ -24,3 +24,7 @@ Predictions:
    subs are first-seen for at least 30% of clusters that reach 3+ subs.
 5. Under 10% of clusters spread across 3+ subs within an hour. Fast multi-sub spread is the coordination signature, and
    it should be rare.
+
+Amendment (Nov 2, 2026, 11:00 AM ET, before any output existed): all-mpnet-base-v2 ran at about 15 s per 128 comments on
+the laptop CPU, which works out to about 33 h for six weeks. The run was switched to sentence-transformers/all-MiniLM-L6-v2
+(--batch 256). The thresholds, filters and predictions are unchanged.

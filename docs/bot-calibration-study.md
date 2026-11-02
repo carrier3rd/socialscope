@@ -651,7 +651,7 @@ sub-spread and new-subreddit share, which mostly measure "brand-new account vs r
 **External check on bots actually seen in our subs.** I trained the same model on the v7.1 metrics and age only (no
 prewindow or hijack features, which these panels lack) and applied it unchanged to the two earlier in-sub panels. Neither
 panel was used in training:
-- **August panel (64 later-listed bots, 1,000 controls):** AUC 0.75, 41% recall at 1% false alarms. The primary rule
+- **August panel (32 later-listed bots, scored against each of two 500-control halves):** AUC 0.74-0.76, 41% recall at 1% false alarms in both halves. The primary rule
   alone gets 31% at 5% false alarms.
 - **September test (70 listed bots, 400 controls, Sep 15 cut):** AUC 0.69, 23% recall at 1% false alarms and 30% at 5%.
   The primary rule alone gets 30% at 4%.

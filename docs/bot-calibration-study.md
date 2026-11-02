@@ -613,3 +613,54 @@ Design and predictions: `docs/aged-drift-checkpoint-predictions.md`, committed b
 **aged_drift fails as a monitor.** Over up to five checks it caught 9% of the bots that were later banned, while 10% of random accounts tripped it at least once in the same five checks: no better than chance. The 46% in the September test did not replicate. Exploratory, not part of the frozen test: computed at the exact ban date it fires for 7 of 32 bots, and on full histories (the September-test reading) for 8 of 32. Whatever drift exists shows up only in the last days around the ban, too late for a check to catch first. 30 of the 32 bots kept posting after the listing (median last item 2 days after it), so post-ban activity explains little of the gap; the September 46% looks like a small-sample high. aged_drift is retired: still computed, no weight, not used to flag.
 
 **Where this leaves bot detection in these subs.** Account age (the v7.1 primary tier) is the one rule that has held across every round and the random-control tests: about a fifth to a third of bots that get banned later, at 3–5% of ordinary accounts. Aged bots, which are the majority of not-yet-banned bots in these subs, remain undetected by anything built here. The next attempt should use what comment histories don't hold (posting-client or link patterns, karma trajectories, coordinated timing with other accounts) or the training-set approach with hand-checked labels, since Bot Bouncer's labels for aged accounts are themselves noisy.
+
+## Training set and frozen hijack-rule test (scored Nov 2, 2026, ~2:30 AM ET)
+Predictions: docs/training-set-predictions.md (written before the pull). Sample: 995 Bot Bouncer bans (731 listed before
+Oct 1 = train, 264 from Oct 1 = test), 214 organic verdicts (108 train, 106 test), and 1,000 random accounts active in the
+18 subs Oct 20-26. Full histories, up to 1,000 items each; 22 accounts had no history. Banned and organic histories are
+cut at the listing date for every rule except the two *_full hijack columns, and random accounts are scored at their last
+activity. The v7.1 scorer ran in five chunks of about 500 accounts. Scripts: scripts/train_run/.
+
+**The sample has a design flaw that dominates every number below.** The banned set was drawn from all Bot Bouncer
+listings across Reddit, not from accounts seen in our subs. Only 8 of 989 banned accounts ever posted in any of the 18
+subs, and the median banned history is 8 items. All 1,000 random accounts are heavy users of the 18 subs, with a median of
+1,002 items, at the pull cap. So this test compares brand-new throwaway accounts sitewide with established users of our
+subs. Any rule that can tell new from old wins. The false-alarm rates on random accounts are still valid for our subs.
+The recall numbers describe Bot Bouncer's sitewide catch, not the bots we care about.
+
+Test-split results (95% Wilson intervals):
+1. **Missed.** Only 4% (2-7%, 10/264) of banned accounts are aged, against the predicted 25-45%. Sitewide bans are mostly
+   fresh accounts. The aged, hijacked type from the label audit is common among bans seen in our subs, but rare across all
+   bans.
+2. **Mostly missed, narrowly.** solicit_handle on full histories fires for 40% of aged banned (4/10; cut at listing: 30%),
+   17% of all banned (cut: 11%), 2.1% of random (21/1,000, just over the <2% line) and 6% of organic (just over <5%). On
+   the train split, which is larger: 52% of 56 aged banned (cut: 45%) and 38% of all banned.
+3. **Half held.** solicit_broad fires for 60% of aged banned (6/10; cut: 50%), short of 65-85%. On train it fires for 82% of
+   56 (cut: 75%), inside the range. Random: 5.3% (4-7%), inside 5-12%.
+4. **Recall missed high, false alarms held.** The v7.1 primary tier catches 92% (89-95%) of banned, far above 45-65%,
+   because nearly all of them are new accounts. Random: 4.6% (3-5% predicted). It also flags 52% of the organic-verdict
+   accounts, so account age cannot separate a new bot from a new human who appealed and won.
+5. **Recall above range, false alarms held.** Primary OR solicit_handle: 94% of banned at 6.9% of random (under 7%),
+   and 56% of organic.
+
+**First classifier.** Gradient boosting on the v7.1 metrics, hijack flags, prewindow features and account age, trained on
+banned-train plus half the random accounts plus organic-train. On the matched test (banned-test vs the other half of
+random): AUC 0.99, 94% recall at 1% false alarms. This is the population confound, not skill. The top features are
+sub-spread and new-subreddit share, which mostly measure "brand-new account vs regular of our subs."
+
+**External check on bots actually seen in our subs.** I trained the same model on the v7.1 metrics and age only (no
+prewindow or hijack features, which these panels lack) and applied it unchanged to the two earlier in-sub panels. Neither
+panel was used in training:
+- **August panel (64 later-listed bots, 1,000 controls):** AUC 0.75, 41% recall at 1% false alarms. The primary rule
+  alone gets 31% at 5% false alarms.
+- **September test (70 listed bots, 400 controls, Sep 15 cut):** AUC 0.69, 23% recall at 1% false alarms and 30% at 5%.
+  The primary rule alone gets 30% at 4%.
+- **Precision:** at a 1% bot rate, 41% recall at 1% false alarms means about 29% of flagged accounts would be bots, and
+  23% means about 19%. The primary rule alone gives about 6-7%.
+
+These are small panels with wide intervals, but this is the first model that beats the age rule at a low false-alarm rate on
+honest in-sub data.
+
+**Next.** Rebuild the training set from Bot Bouncer bans of accounts that were active in the 18 subs, matching the
+population of the random controls, and give it its own frozen test. The hijack rules need that rebuilt set too: on
+sitewide bans there were only 10 aged test accounts.

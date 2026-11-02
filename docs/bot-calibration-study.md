@@ -664,3 +664,14 @@ honest in-sub data.
 **Next.** Rebuild the training set from Bot Bouncer bans of accounts that were active in the 18 subs, matching the
 population of the random controls, and give it its own frozen test. The hijack rules need that rebuilt set too: on
 sitewide bans there were only 10 aged test accounts.
+
+## In-sub rebuild (Nov 2, 2026): first real improvement over account age
+Details: docs/insub-training-predictions.md. On fresh bans of accounts active in our subs, with in-sub random controls:
+- **Age rule:** 33% caught at 5% false alarms. This matches every earlier honest test.
+- **Hijack rules:** solicit_broad catches 75% of aged bans and solicit_handle 54%, at 6% and 2% false alarms.
+- **Classifier:** catches 67% at 1% false alarms (AUC 0.97), about 40% precision at a 1% bot rate. Without volume
+  features it is 57%, and against size-matched controls 62%.
+
+This is the first result that clearly beats account age at a low false-alarm rate on honest data. The hijack signature,
+an established account turning to new subs and NSFW solicitation shortly before listing, drives it. Forward test still
+needed.

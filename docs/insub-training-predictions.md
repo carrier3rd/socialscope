@@ -25,3 +25,38 @@ Predictions, scored on the fresh test positives vs. the test half of controls:
 5. The retrained classifier reaches AUC 0.75-0.88 and catches 30-50% of test positives at 1% control false alarms.
    That is 23-34% precision at a 1% bot rate.
 6. Of the 264 pending, 30-60% are banned in the Nov 3 Bot Bouncer pull.
+
+## Results (scored Nov 2, 2026, ~9:30 AM ET)
+Built with scripts/insub_run/ (build, feats, score); every name is hashed.
+- **Test positives:** 186 fresh Bot Bouncer bans of accounts seen in our subs.
+- **Test controls:** 483, the hash-parity half of the random in-sub accounts, with any Bot Bouncer-listed account
+  removed.
+- **Pending:** 259 accounts reported separately.
+- **Train:** 114 earlier in-sub bans with full histories (the other 87 exist only as comment-only slims and were left
+  out) and 2,216 in-sub controls.
+- **Cut:** positives and pending at their listing date, controls at last activity.
+
+Scores (95% Wilson intervals):
+1. **Held.** 62% (55-69%) of test positives are aged, inside 45-70%. Compare 4% among sitewide bans. 79% of controls are
+   aged too, so age alone splits the two groups poorly.
+2. **Held on bots, missed narrowly on controls.** solicit_handle fires for 54% (45-63%) of aged positives, inside
+   25-50%'s upper reach; it is 37% of all positives. On controls it fires for 2.1% (10/483), at the top edge of 1.5-3%.
+3. **Held.** solicit_broad fires for 75% (66-82%) of aged positives, at the top of 50-75%, and 50% of all positives.
+   Controls: 6.0%, inside 4-7%.
+4. **Held.** The primary tier catches 33% (26-40%) of positives at 4.6% of controls. Primary OR solicit_handle catches
+   66% at 6.6%.
+5. **Beaten.** Gradient boosting reaches AUC 0.965 and catches 67% (60-74%) of positives at 1% false alarms, about 40%
+   precision at a 1% bot rate. The prediction was AUC 0.75-0.88 and 30-50%. Logistic regression gets 53% at 1%.
+   - **Confound checks:** without the volume features (item counts), recall is 57% at 1%. Against controls matched to
+     the positives' item-count range, it is 62% (52-71%). The top features are new-subreddit share in the 30 days
+     before the cut, comment count, solicit_broad, sub spread in the window, and link-share change. That combination
+     is the hijack signature: an established account suddenly posting in new places.
+6. **Unscorable.** Arctic Shift records a listing's flair at capture, so the Nov pull re-lists none of the 263 pending
+   accounts. Their verdicts are unknown. On the model, pending accounts are flagged at 19% at the 1% threshold, between
+   bots (67%) and controls (1%), consistent with a mix.
+
+Caveats:
+- **Labels:** Bot Bouncer's labels are the ground truth, and the label audit put their noise at 17% or less.
+- **Hidden bots:** controls may contain unlisted bots, which would make these numbers conservative.
+- **Timing:** positives were mostly listed in Jul-Aug, while controls are October-active.
+- **Next test:** a forward test on accounts listed after Nov 2.

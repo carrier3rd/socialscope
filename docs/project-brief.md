@@ -1,4 +1,4 @@
-# socialscope: project brief (updated Nov 2, 2026)
+# socialscope: project brief (updated Nov 2, 2026, 3:45 PM)
 
 Joseph's project on bots, brigading and opinion crossover in Reddit drama and political subs (18 subs: Asmongold,
 Conservative, Destiny, Hasan_Piker, IsraelPalestine, LeftoversH3, LivestreamFail, Palestine, PoliticalCompassMemes,
@@ -45,9 +45,8 @@ Repo: carrier3rd/socialscope (private). Detail lives in docs/; this page is the 
   Its sample goes to Gemini for labeling.
 - **Forward test (docs/forward-test-predictions.md):** frozen model, 2,000 unlisted in-sub accounts. Histories are
   pulling now. A scheduled check runs Dec 1 and needs a Bot Bouncer pull for Nov 3-30 first.
-- **Commentator study (docs/commentator-valence-predictions.md):** tests whether "America is bad" framing comes from
-  streamers. Transcripts are downloading (HasanAbi done, 86 videos). Then scripts/transcript_chunks.py, Gemini coding,
-  and quote checking with `verify`.
+- **Commentator study, still to do:** Pakman and Bulwark transcripts, coding r/Destiny comments about America, and the
+  agreement check.
 - **Oct 27 week:** a top-up rerun is due after Nov 3, for Nov 2 and thebulwark comments.
 
 ## How work gets done

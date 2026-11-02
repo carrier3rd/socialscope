@@ -50,3 +50,12 @@ The largest cluster has 142 comments, so no single phrase chained everything tog
 What this says: across these 18 subs, repeated phrasing moves in both directions about equally in normal weeks. Only a
 drama event produces a clear source, and the source is the sub at the center of the event. Nothing here looks like a
 coordinated push from one community into another.
+
+## Correction (Nov 2, 2026): task 3 results void
+Gemini labeled a random 150 of the phrase clusters. 59% were coincidental stock phrases, 11% memes and 7% shared
+quotes. Only 22% were talking points, and my spot check says even that is generous, since many of those share a topic
+rather than a framing. The share was 17% in quiet weeks and 43% in the Ethan week. So the direction counts and first-seen
+counts above mostly measure idiom overlap, and predictions 5 and 6 are unscored. On the 33 talking-point clusters alone:
+5 politics-to-drama steps against 6 drama-to-politics, too few to say anything. "Nothing here looks like a coordinated
+push" is withdrawn as unsupported. Redo: embedding clustering (e5-base-v2, as in Hanley & Durumeric), with a single-source
+cap and idiom, quote and meme filters, evaluated against Gemini's 150 labels (work/tp/gem_tp*.csv).

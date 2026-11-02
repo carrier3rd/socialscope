@@ -23,3 +23,26 @@ Predictions:
 5. Where a specific framing is traceable (the same phrase or claim), it reaches the sub within 0-3 days of the stream in
    most cases.
 6. Gemini's quote accuracy before verification is under 80%: at least 1 in 5 quotes won't match the transcript.
+
+## Pilot and amendment (Nov 2, 2026, 2:50 PM ET, before the full run)
+Pilot: 8 files of 5 transcript chunks each (4 Hasan, 4 Destiny, spread over the six weeks), coded by Gemini.
+- **Quotes:** 42 of 50 matched the transcript verbatim (84%). That is above my "under 80%" prediction, so prediction 6
+  missed.
+- **Speakers:** most of Destiny's uploads are reactions and debates. Gemini put 14 of 25 Destiny rows on clips or
+  guests, so a speaker column is now required, and only rows where the commentator is speaking are used.
+- **Default column dropped:** Gemini's "default" (judgment-first) calls were unreliable. It called Destiny's
+  step-by-step JCPOA argument judgment-first.
+- **New variable, target:** what the evaluation is aimed at. Codes: administration (a named administration, official or
+  politician); agency (an agency or institution as such, e.g. ICE, DHS, CIA, the military); company (a US company);
+  system (the US as a whole, its empire, state policy across administrations, capitalism/the system).
+- **Pilot result, my own tags on the verified commentator rows:**
+  - Destiny: 7 of 7 aimed at an administration.
+  - Hasan: about 4 of 23 aimed at an administration; the rest at agencies, companies or the system.
+  - Valence did not separate them: 23 of 23 negative for Hasan, 6 of 7 for Destiny.
+
+Amended predictions for the full run (Hasan and Destiny; Pakman and Bulwark later). Commentator rows only, verified
+quotes only:
+7. Hasan: 60% or more of his negative evaluations target agency, company or system.
+8. Destiny: 60% or more of his evaluations target an administration. Agency plus system is 25% or less.
+9. Positive or mixed share: Destiny 10% or more, Hasan 5% or less.
+10. Agreement: my target tags on a random 20 of Gemini's rows agree with Gemini's 75% or more of the time.

@@ -18,3 +18,11 @@ Predictions:
    bots Bot Bouncer hasn't reached yet.
 5. Among flagged accounts that are not banned by Nov 30, a hand check finds at least a third look like hijacked
    solicitation accounts. That would mean Bot Bouncer's coverage lags, not that the model is wrong.
+
+## Scores frozen (Nov 3, 2026, 7:50 AM ET, before any outcome)
+Histories pulled for 2,000 of 2,000 accounts (finished Nov 2, 11:33 PM). Scored with scripts/insub_run/score_fwd.py on
+items before the Nov 3 00:00 ET cutoff, model sha prefix a1978ad38af51414 (checked).
+- Flagged at the 1% threshold: 22 (1.1%). Prediction 4 (1-3%) **held**.
+- Flagged at the 5% threshold: 108 (5.4%).
+- scores_frozen.csv sha256: 7e21ced8ccab9e8f2c5f745f4732e03011af4566571f8f109e6c185a1d68aa85
+The file stays private (account hashes only, kept off the repo). Any later change to it breaks this hash.

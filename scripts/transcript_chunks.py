@@ -74,7 +74,8 @@ def chunk(a):
 
 
 def norm(s):
-    return re.sub(r"[^a-z0-9 ]", "", s.lower()).split()
+    s = re.sub(r"\[\d\d:\d\d\]", " ", s)  # timestamp marks can fall inside a quote
+    return re.sub(r"[^a-z0-9 ]", " ", s.lower()).split()
 
 
 def verify(a):

@@ -42,3 +42,11 @@ Next: Argon labels the 0.85 sample to test whether a stricter threshold removes 
 
 ### Labeler check (Nov 2, 7:05 PM ET)
 Argon relabeled the first 30 v1 clusters with the same instructions as v2. It called 4 of 30 TP (13%); the older Gemini had called 6 of those same 30 TP (20%). The two agreed on 24 of 30. Argon is stricter, not looser, so the v1-to-v2 jump (22% to 57%) is not a labeler effect.
+
+### Threshold 0.85 check (Nov 2, 7:30 PM ET)
+Argon (high thinking) labeled the 150-cluster 0.85 sample in three fresh chats. Parts 1 and 2 (clusters 0-99): TP 71, coincidence 23, meme 4, quote 2. Part 3 came back 46 TP, 0 coincidence, 3 meme, 1 quote, and labeled same-topic debate clusters as TP, which parts 1-2 called coincidence. That is labeler drift between chats, so part 3 is set aside (kept as gem_085_p3_run1) and the comparison uses clusters 0-99 at both thresholds:
+- 0.80: 56% TP, 42% coincidence.
+- 0.85: 71% TP, 23% coincidence.
+At 0.85 the quiet weeks nearly vanish (4-12 clusters each, 6 of the 150 sampled).
+
+Decision: 0.85 for talking-point lists and examples; 0.80 for spread-direction and first-seen counts, which need volume. A part 3 rerun is optional.

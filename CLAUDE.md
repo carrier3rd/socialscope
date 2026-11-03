@@ -1,0 +1,38 @@
+# CLAUDE.md
+
+## Working with the cloud session
+
+Two Claude sessions work on this project: the laptop session (Claude Code on the laptop, which runs every job) and
+a cloud session that reads and writes files in ~/socialscope and ~/socialscope_data through a file bridge but
+cannot run commands. To keep the two from overwriting each other:
+
+1. **Never discard uncommitted work.** Never checkout, reset, stash or restore a file in the working tree without
+   first running `git status` and `git diff` on it. Uncommitted changes may be the cloud session's work. If a file
+   differs from git, commit it or ask; don't discard it. (On the night of Nov 2-3, 2026,
+   docs/orl-archive-results.md was reset to an older version this way.)
+2. **Commit promptly.** Commit and push in small commits by topic. Commit any file the cloud session changes as
+   soon as you notice it.
+3. **Predictions are timestamped records.** Commit a `*-predictions.md` file before running or reading the data it
+   predicts. Never edit an existing prediction; additions go at the end as dated addenda. Results go in a separate
+   `*-results.md` file, misses included.
+4. **Check before editing the other session's scripts.** Read a script's current contents before editing it. Fix
+   bugs in place with a short comment saying what was wrong and when (like the websocket ping comment in
+   scripts/dgg_live_logger.py), so the other session can see why it changed.
+5. **Privacy.** Nicks and usernames are hashed at ingest with HMAC-SHA256 using ~/socialscope/.socialscope_salt
+   (first 16 hex chars). Never write raw nicks to disk, logs, STATUS.txt or progress pages, and never print the
+   salt. Chat accounts are never linked to Reddit accounts.
+6. **Long jobs.** Every long job runs under nohup with systemd-inhibit, uses absolute paths, gets a line in
+   ~/socialscope_data/jobs.tsv, and writes progress where status.sh can see it. For "wait until job X ends" loops,
+   use a PID file or a pattern anchored to the start of the command line, e.g.
+   `pgrep -f '^python3 -I scripts/orl_aggregate.py'`. An unanchored pattern such as `pgrep -f orl_aggregate.py`
+   (or `"python3 .*orl_aggregate"`) also matches any shell whose command text merely mentions the script, such as
+   a leftover `bash -c` from a launch or status check, and the loop never exits. That is what stalled orl2 on
+   Nov 2-3.
+7. **Servers serve only status folders.** Progress and status servers serve only their own status folder
+   (`python3 -m http.server --directory <dir>`), never a data folder. Current ports: 8765 dgg_progress,
+   8766 orl_progress, 8767 dgg_live_status.
+8. **Standing service: dgg-live** (systemd --user, unit copy in ops/laptop/dgg-live.service). Restart it after any
+   change to scripts/dgg_live_logger.py, then check that status.json shows plausible messages per minute and far
+   fewer distinct users than messages.
+9. **Say how jobs ended.** When you finish or stop a job, say so in STATUS.txt and jobs.tsv in plain terms (done /
+   stopped / failed, and why), so the next session doesn't have to guess.

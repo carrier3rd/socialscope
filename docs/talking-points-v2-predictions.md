@@ -39,3 +39,6 @@ Gemini 4 Argon (high thinking) labeled the 150 sampled clusters at 0.80, blind, 
 5. **Held.** No cluster in any week reached 3+ subs within an hour (0 of 1,916).
 
 Next: Argon labels the 0.85 sample to test whether a stricter threshold removes topic clusters, and relabels the v1 part 1 sample to check for a labeler effect.
+
+### Labeler check (Nov 2, 7:05 PM ET)
+Argon relabeled the first 30 v1 clusters with the same instructions as v2. It called 4 of 30 TP (13%); the older Gemini had called 6 of those same 30 TP (20%). The two agreed on 24 of 30. Argon is stricter, not looser, so the v1-to-v2 jump (22% to 57%) is not a labeler effect.

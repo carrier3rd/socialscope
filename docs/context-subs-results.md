@@ -30,3 +30,6 @@ Prediction 2 is a miss on the corrected data; 1, 3 and 4 still hold.
 ## Chosen pulls (Joseph, Nov 3)
 Full weeks: Fauxmoi, youtubedrama, DecodingTheGurus, ShitLiberalsSay (in place of TheDeprogram, which is inactive).
 Posts only: politics, worldnews, news. Same six weeks as the panel. Script: scripts/pull_context_subs.py.
+
+## Change (Nov 3, 9:15 PM, Joseph)
+One continuous window, Aug 1 - Nov 2, 2026, instead of the six panel weeks. ShitLiberalsSay dropped. Full: Fauxmoi, youtubedrama, DecodingTheGurus. Posts only: politics, worldnews, news.

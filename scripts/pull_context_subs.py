@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Context-sub pulls chosen Nov 3, 2026 (docs/context-subs-results.md).
-Full posts+comments for small/medium subs; posts only for the huge news subs. Same six weeks as the panel.
+Full posts+comments for small/medium subs; posts only for the huge news subs.
+Changed Nov 3, 9:15 PM (Joseph): one continuous window Aug 1 - Nov 2, 2026, pulled month by month so each zip stays
+a manageable size; ShitLiberalsSay dropped.
 Resumable: finished zips are skipped. Run from ~/socialscope:
   nohup systemd-inhibit --what=sleep:idle --who=socialscope --why="context pulls" \
     python3 -I scripts/pull_context_subs.py > ~/socialscope_data/context_pull.log 2>&1 &
@@ -9,9 +11,9 @@ import os, sys
 sys.path.insert(0, os.path.expanduser("~/socialscope"))
 from socialscope import arctic
 
-WEEKS = [("2026-08-18", "2026-08-25"), ("2026-09-08", "2026-09-15"), ("2026-09-22", "2026-09-29"),
-         ("2026-10-13", "2026-10-20"), ("2026-10-20", "2026-10-27"), ("2026-10-27", "2026-11-03")]
-FULL = ["youtubedrama", "DecodingTheGurus", "ShitLiberalsSay", "Fauxmoi"]
+WEEKS = [("2026-08-01", "2026-09-01"), ("2026-09-01", "2026-10-01"), ("2026-10-01", "2026-11-01"),
+         ("2026-11-01", "2026-11-03")]
+FULL = ["youtubedrama", "DecodingTheGurus", "Fauxmoi"]
 POSTS_ONLY = ["politics", "worldnews", "news"]
 OUT = os.path.expanduser("~/socialscope_data/reddit_pulls/context")
 

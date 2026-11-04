@@ -11,3 +11,20 @@ Predictions:
 3. VaushV, ShitLiberalsSay or socialism appear among the left-sub regulars' top 15; moderatepolitics or
    KotakuInAction among Asmongold/Conservative regulars.
 4. Fauxmoi or a drama sub (SubredditDrama, HobbyDrama) appears among h3/LSF regulars.
+
+## Results (Nov 3, 9:20 PM ET)
+2,000 accounts; shares are accounts with 3+ items in a sub. Home = the panel sub the account used most. Lift = share
+in the home group divided by share across the cohort. Groups under 25 accounts (dsa, samharris, thebulwark,
+thedavidpakmanshow, atrioc) are not reported.
+
+1. **Held.** Top reach: AskReddit 36%, politics 17%, worldnews 16%, pics 16%, news 12%.
+2. **Partly held.** h3snark is the top extra sub for LeftoversH3 regulars (20%, 10x lift), not for h3h3productions
+   regulars, whose extras are TeddyFresh, olivertree, Frenemies and Trishyland.
+3. **Mostly held.** Tankie: ShitLiberalsSay 49%, TheDeprogram 34%. Asmongold: KotakuInAction 8.5% (6.5x).
+   VaushV and socialism did not show; Hasan regulars go to TrueAnon, leftist, TheMajorityReport and LateStageCapitalism.
+4. **Held.** Fauxmoi: Hasan_Piker 21.5%, LeftoversH3 17%, Palestine 25%. youtubedrama in LeftoversH3 (8%).
+
+Strongest sister subs by group: Destiny - Daliban (10%), DecodingTheGurus; neoliberal - metaNL, Enough_Sanders_Spam,
+fivethirtyeight; PCM - PoliticalCompass, ShitPoliticsSays; ukraine - UkrainianConflict (21%), UkraineWarVideoReport
+(26%), NAFO; Conservative - conservatives (14%); Palestine - israelexposed (36%), JewsOfConscience (25%);
+IsraelPalestine - Israel_Palestine, Israel (23%).

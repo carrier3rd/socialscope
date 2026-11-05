@@ -18,9 +18,12 @@ cannot run commands. To keep the two from overwriting each other:
 4. **Check before editing the other session's scripts.** Read a script's current contents before editing it. Fix
    bugs in place with a short comment saying what was wrong and when (like the websocket ping comment in
    scripts/dgg_live_logger.py), so the other session can see why it changed.
-5. **Privacy.** Nicks and usernames are hashed at ingest with HMAC-SHA256 using ~/socialscope/.socialscope_salt
-   (first 16 hex chars). Never write raw nicks to disk, logs, STATUS.txt or progress pages, and never print the
-   salt. Chat accounts are never linked to Reddit accounts.
+5. **Privacy.** Changed Nov 5 2026 by Joseph: DGG chat nicks are now kept raw. The live logger stores "nick" next
+   to the hash "u" (HMAC-SHA256 with ~/socialscope/.socialscope_salt, first 16 hex chars), and the public site
+   shows DGG handles in its chatter tables (message counts and activity only). Still in force: never print the
+   salt; Reddit usernames stay hashed; chat accounts are never linked to Reddit accounts or to real-world
+   identities; no per-person hostility, raid or harassment labels are published; private sample files
+   (samples_*.jsonl) are never committed or published.
 6. **Long jobs.** Every long job runs under nohup with systemd-inhibit, uses absolute paths, gets a line in
    ~/socialscope_data/jobs.tsv, and writes progress where status.sh can see it. For "wait until job X ends" loops,
    use a PID file or a pattern anchored to the start of the command line, e.g.

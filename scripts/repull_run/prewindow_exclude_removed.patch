@@ -1,0 +1,67 @@
+--- a/socialscope/prewindow.py	2026-11-05 12:59:42.739585088 -0500
++++ b/socialscope/prewindow.py
+@@ -21,6 +21,22 @@
+ DEFAULT_WINDOW_DAYS = 30
+ SHORT_COMMENT_MAX_CHARS = 20
+ URL_RE = re.compile(r"https?://\S+|www\.\S+", re.IGNORECASE)
++REMOVED_TEXT = ("[removed]", "[deleted]")
++
++
++def _text_clean(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
++    """Added Nov 5 2026 (scripts/repull_run): a comment whose body is [removed]/[deleted] has no text to measure,
++    so it is dropped from the text features; a post whose selftext was removed keeps its title. history.py
++    already excluded removed bodies; this module counted them as 9-character comments, which shortened the
++    median length and inflated the short-comment share of accounts whose posts get removed."""
++    body = item.get("body")
++    if "title" not in item and isinstance(body, str) and body.strip() in REMOVED_TEXT:
++        return None
++    if "title" in item and isinstance(item.get("selftext"), str) and item["selftext"].strip() in REMOVED_TEXT:
++        y = dict(item)
++        y["selftext"] = ""
++        return y
++    return item
+ 
+ 
+ def extract_text(item: Dict[str, Any]) -> str:
+@@ -298,10 +314,15 @@
+     anchor_utc: float | int,
+     window_days: int = DEFAULT_WINDOW_DAYS,
+     short_comment_max_chars: int = SHORT_COMMENT_MAX_CHARS,
++    exclude_removed: bool = False,
+ ) -> Dict[str, float | int]:
+     """
+     Compute all ban-relative 30-day pre-window features for an account's history relative to `anchor_utc`.
+ 
++    exclude_removed=True (added Nov 5 2026) leaves [removed]/[deleted] comment bodies and removed selftexts out of
++    the three text features (median_length_ratio, link_share_change, short_comment_share). Counts and subreddit
++    features still use every item. The default False reproduces every result scored before that date.
++
+     Returns a dictionary containing:
+         - `window_items`: count of items in `[anchor_utc - 30d, anchor_utc]`
+         - `earlier_items`: count of items strictly before `anchor_utc - 30d`
+@@ -315,6 +336,11 @@
+         - `longest_silence_before_window`: longest gap in days across earlier items and transition into window
+     """
+     earlier, window = partition_history(items, anchor_utc=anchor_utc, window_days=window_days)
++    if exclude_removed:
++        t_earlier = [y for y in (_text_clean(x) for x in earlier) if y is not None]
++        t_window = [y for y in (_text_clean(x) for x in window) if y is not None]
++    else:
++        t_earlier, t_window = earlier, window
+ 
+     return {
+         "window_items": len(window),
+@@ -324,10 +350,10 @@
+         "posting_rate_ratio": round(
+             compute_posting_rate_ratio(earlier, window, anchor_utc=anchor_utc, window_days=window_days), 6
+         ),
+-        "median_length_ratio": round(compute_median_length_ratio(earlier, window), 6),
+-        "link_share_change": round(compute_link_share_change(earlier, window), 6),
++        "median_length_ratio": round(compute_median_length_ratio(t_earlier, t_window), 6),
++        "link_share_change": round(compute_link_share_change(t_earlier, t_window), 6),
+         "short_comment_share": round(
+-            compute_short_comment_share(window, max_chars=short_comment_max_chars), 6
++            compute_short_comment_share(t_window, max_chars=short_comment_max_chars), 6
+         ),
+         "score_median_change": round(compute_score_median_change(earlier, window), 6),
+         "longest_silence_before_window": round(

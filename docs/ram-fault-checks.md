@@ -38,3 +38,18 @@ docs/repull-results.md. Four tries without `badpage_hold` all failed while loadi
 
 The other 71 week files passing these checks means no corrupted key names or dates were found; a flip inside a text
 value would pass. The only way to rule that out is re-pulling, which is a judgment call for each file.
+
+## Addendum, Nov 11 2026 evening (laptop session)
+
+- **badpage_hold is now a boot service** (`ops/laptop/badpage-hold.service`, source `ops/laptop/badpage_hold.c`,
+  enabled in systemd --user with linger, ordered before dgg-live). After the 18:04 reboot it found only 1 bad page;
+  a second run 5 minutes later (`badpage-hold-extra`, a transient unit that won't come back after a reboot) found 6.
+  So the flips come and go with conditions, probably temperature, and one boot-time scan doesn't find them all.
+  Both stay running.
+- **h3h3productions comments, Oct 27 week: re-pulled and replaced.** The new copy (95,537 comments) passes the record
+  check (`scripts/integrity/week_records.py`). Record by record against the old copy
+  (`scripts/integrity/cmp_pulls.py`): 57,414 identical; 35,640 differ only in fields that change between pulls
+  (score, ups, num_comments, score_hidden, locked, `_meta`), plus the three corrupted key names and one changed
+  link_url/link_permalink pair in the same record as `num_cnmments`, almost certainly flips too. 2,483 comments are
+  new; 66 are gone (deleted since). The old copy is kept beside it as `.zip.ramcorrupt_nov9`.
+- The checkers now live in `scripts/integrity/` (the scratch copies were lost when the reboot cleared /tmp).

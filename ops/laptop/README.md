@@ -23,3 +23,6 @@ same rebuild (old copy liveenv.py312.bak). After any OS upgrade, check `liveenv/
 first. ytenv and stenv are still on 3.11 and need the same rebuild before their next use.
 The status servers (8765, 8766, 8767) are plain nohup http.server processes and don't survive a reboot:
   nohup python3 -m http.server <port> --directory ~/socialscope_data/<status dir> > ~/socialscope_data/<status dir>_server.log 2>&1 &
+botfinds-weekly.service / .timer (added Nov 11, 2026): weekly Bot Bouncer status check for submitted bot finds,
+Mondays 06:30, runs ops/botfinds_weekly.sh. Install: copy both into ~/.config/systemd/user/, daemon-reload, then
+`systemctl --user enable --now botfinds-weekly.timer`. Log: ~/socialscope_data/botfinds_weekly.out.

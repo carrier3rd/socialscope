@@ -21,7 +21,10 @@ from collections import Counter
 from datetime import datetime, timezone
 
 BF = os.path.expanduser("~/socialscope_data/botfinds")
-TRACK_COLS = ["account", "username", "status", "decided_utc", "submitted_utc", "bb_flair", "bb_checked_utc", "notes"]
+# Nov 11: bb_listed_utc, bb_link and banned_since added for weekly_check.py (the site needs the listing link and
+# a recheck date within 7 days). Older tracker files gain the columns, blank, on the next write.
+TRACK_COLS = ["account", "username", "status", "decided_utc", "submitted_utc", "bb_flair", "bb_listed_utc", "bb_link",
+              "banned_since", "bb_checked_utc", "notes"]
 
 
 def read(path):
@@ -35,7 +38,7 @@ def norm(c):
 
 def write(path, cols, rows):
     with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols)
+        w = csv.DictWriter(fh, fieldnames=cols, restval="")
         w.writeheader()
         w.writerows(rows)
     os.chmod(path, 0o600)
@@ -54,7 +57,7 @@ def main():
         out.append({"account": k, "user_call": u, "cloud_call": c, "decision": d})
         if d == "submit" and k not in track:
             track[k] = {"account": k, "username": cand.get(k, {}).get("username", ""), "status": "to_submit",
-                        "decided_utc": today, "submitted_utc": "", "bb_flair": "", "bb_checked_utc": "", "notes": ""}
+                        "decided_utc": today}
     write(os.path.join(BF, "review.csv"), ["account", "user_call", "cloud_call", "decision"], out)
     write(os.path.join(BF, "tracker.csv"), TRACK_COLS, list(track.values()))
 

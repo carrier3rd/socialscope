@@ -1,0 +1,10 @@
+[Unit]
+Description=socialscope: weekly Bot Bouncer status check (Mondays 06:30)
+
+[Timer]
+# Weekly, so a banned account's recheck is never older than 7 days when the site is built (CLAUDE.md rule 5).
+OnCalendar=Mon *-*-* 06:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

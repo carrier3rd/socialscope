@@ -11,7 +11,7 @@ committed or pasted into chat.
 | 2 | user and cloud session, separately | Read each evidence file. Enter bot / not bot / unsure plus one line of reasons in **your own file only**: `review_user.csv` (user) or `review_cloud.csv` (cloud session). Don't open the other file before your own call is in. |
 | 3 | laptop | `python3 -I scripts/botfinds/review_merge.py`: an account is submitted only if both reviewers called it bot. Any other pair of calls is a hold, and a row with a blank call waits. It writes `review.csv`, adds the accounts to submit to `tracker.csv`, and drafts the text in `submit_queue.md`. |
 | 4 | user only | Submit through Bot Bouncer's normal Reddit process, then set `status=submitted` and `submitted_utc` in `tracker.csv`. Claude never posts. |
-| 5 | laptop, weekly (build step 2, not written yet) | Check each submitted account's Bot Bouncer flair. Status becomes `banned` or `cleared`. |
+| 5 | laptop, weekly | `ops/botfinds_weekly.sh`, run by `botfinds-weekly.timer` on Mondays at 06:30 (units in `ops/laptop/`), pulls the recent r/BotBouncer posts once no other Arctic Shift pull is running. `weekly_check.py` then sets each submitted account to `banned` / `pending` / `cleared` / `gone`, along with the listing link and recheck date. Log: `~/socialscope_data/botfinds_weekly.out`. A row that stays pending for more than 14 days needs a check by hand, because Arctic Shift keeps a post's flair as it was when captured. |
 
 Candidates are control accounts (Bot Bouncer had not listed them when the groups were built) flagged at the strict
 setting:

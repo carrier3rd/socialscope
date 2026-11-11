@@ -1,0 +1,7 @@
+[Unit]
+Description=socialscope: weekly Bot Bouncer status check for submitted bot finds
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemd-inhibit --what=idle:sleep --mode=block --why="botfinds weekly check" /home/probs/socialscope/ops/botfinds_weekly.sh

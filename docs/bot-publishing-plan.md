@@ -32,7 +32,7 @@ Path 1 adds an independent judge, Bot Bouncer. Path 2 builds a stricter bar of o
 Path 1 also measures us. The share of our submissions Bot Bouncer bans is the cleanest outside check on the
 detector we have.
 
-## Path 2: our own standard ("suspected bot (socialscope)")
+## Path 2: our own standard ("bot-like behavior (socialscope)")
 
 **Proposed strict bar.** To be frozen, with numbers, in `docs/bot-publishing-predictions.md` before any test run.
 All four must hold:
@@ -57,7 +57,7 @@ All four must hold:
   banned bots.
 
 **Once it passes:**
-- An account meeting the bar can go up as "suspected bot (socialscope)" while Bot Bouncer is still pending, with
+- An account meeting the bar can go up as "bot-like behavior (socialscope)" while Bot Bouncer is still pending, with
   its bot-period evidence shown and a dispute link.
 - A disputed account comes down at the next rebuild while it's re-checked.
 - If Bot Bouncer clears more than 10% of published Path 2 accounts in any 30 days, Path 2 stops and all of its
@@ -76,7 +76,7 @@ All four must hold:
 1. Packet builder and private tracker (scripts/botfinds/), reading only data already pulled.
 2. Weekly status check against Bot Bouncer listings, added to jobs.tsv and status.sh.
 3. Site section for confirmed finds (Path 1), off until the first ban.
-4. Path 2 predictions file (bar frozen), then the test. The site section for suspected bots stays off until the
+4. Path 2 predictions file (bar frozen), then the test. The site section for bot-like accounts stays off until the
    test passes.
 
 ## Decisions (dated)
@@ -84,3 +84,10 @@ All four must hold:
 - **Nov 10, 2026, reviewer:** both. The user and the cloud session each read every packet on their own. Two "bot"
   calls are needed to submit; any disagreement counts as "unsure" and isn't submitted. Each reviewer writes to
   their own column in `botfinds/review.csv`, without seeing the other's call first.
+- **Nov 11, 2026, dispute channel:** a plain email address shown on the site (address to be supplied by the user;
+  the Path 2 section can't go live without it). No issue form; this is a small operation.
+- **Nov 11, 2026, Path 2 pass bar:** as proposed. At least 40 decided accounts, 95% or more banned, and the low
+  end of the 95% range at 85% or above. The 85% low end is the condition that decides it.
+- **Nov 11, 2026, Path 2 label:** "bot-like behavior (socialscope)", not "suspected bot". The page describes the
+  behavior we saw, not a verdict on the account. Wording changed in this plan and in CLAUDE.md rule 5.
+- **Nov 11, 2026, candidate source:** both the weekly panels and the in-sub cohort.

@@ -1,0 +1,14 @@
+[Unit]
+Description=hold faulty RAM pages out of use (socialscope stopgap, Nov 11 2026; see docs/ram-fault-checks.md)
+# Starts at boot (linger is on), before the chat logger, so its 7 GB test runs while most RAM is still free.
+Before=dgg-live.service
+[Service]
+# Binary built from ops/laptop/badpage_hold.c: gcc -O2 -o ~/socialscope_data/tools/badpage_hold ops/laptop/badpage_hold.c
+ExecStart=/home/probs/socialscope_data/tools/badpage_hold 7000 6
+StandardOutput=append:/home/probs/socialscope_data/badpage_hold.out
+StandardError=append:/home/probs/socialscope_data/badpage_hold.err
+Nice=10
+Restart=on-failure
+RestartSec=60
+[Install]
+WantedBy=default.target

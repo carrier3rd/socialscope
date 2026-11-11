@@ -84,8 +84,8 @@ All four must hold:
 - **Nov 10, 2026, reviewer:** both. The user and the cloud session each read every packet on their own. Two "bot"
   calls are needed to submit; any disagreement counts as "unsure" and isn't submitted. Each reviewer writes to
   their own column in `botfinds/review.csv`, without seeing the other's call first.
-- **Nov 11, 2026, dispute channel:** a plain email address shown on the site (address to be supplied by the user;
-  the Path 2 section can't go live without it). No issue form; this is a small operation.
+- **Nov 11, 2026, dispute channel:** a plain email address shown on the site, carrier3rd@gmail.com (given by the user Nov 11;
+  no issue form; this is a small operation).
 - **Nov 11, 2026, Path 2 pass bar:** as proposed. At least 40 decided accounts, 95% or more banned, and the low
   end of the 95% range at 85% or above. The 85% low end is the condition that decides it.
 - **Nov 11, 2026, Path 2 label:** "bot-like behavior (socialscope)", not "suspected bot". The page describes the

@@ -32,6 +32,20 @@ cannot run commands. To keep the two from overwriting each other:
      name. The earlier history was a real person's and stays hashed and aggregate.
    - The label is attributed as "listed as a bot by Bot Bouncer", with a link to the listing, not as our own verdict.
    - Everything else in this rule still applies to every other account, and never link a bot to a real-world identity.
+   **Bots Bot Bouncer hasn't found (added Nov 10 2026 by the user; plan in docs/bot-publishing-plan.md).** Two
+   paths, and nothing else puts our own finds on the site:
+   - *Path 1, feed Bot Bouncer.* Detector flags plus their evidence packets are reviewed by a person and submitted
+     to Bot Bouncer by the user (Claude never posts or submits on Reddit). An account Bot Bouncer bans is published
+     under the rule above, with "found by socialscope".
+   - *Path 2, our own standard.* An account may be published as "suspected bot (socialscope)" only if all of these
+     hold:
+     - it meets the strict evidence bar as frozen in docs/bot-publishing-predictions.md;
+     - that bar has passed its blind test (see the plan);
+     - a person has read the account;
+     - the page shows the evidence and how to dispute it.
+     If the bar has not passed, or later fails, nothing goes up this way.
+   - Packets, review notes and the submission tracker contain usernames: they live in ~/socialscope_data/botfinds/
+     and are never committed.
 6. **Long jobs.** Every long job runs under nohup with systemd-inhibit, uses absolute paths, gets a line in
    ~/socialscope_data/jobs.tsv, and writes progress where status.sh can see it. For "wait until job X ends" loops,
    use a PID file or a pattern anchored to the start of the command line, e.g.

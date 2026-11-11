@@ -24,6 +24,14 @@ cannot run commands. To keep the two from overwriting each other:
    salt; Reddit usernames stay hashed; chat accounts are never linked to Reddit accounts or to real-world
    identities; no per-person hostility, raid or harassment labels are published; private sample files
    (samples_*.jsonl) are never committed or published.
+   **Exception, added Nov 10 2026 by the user: confirmed bots can be named, including on the public site.**
+   - "Confirmed" means Bot Bouncer has banned the account, rechecked within 7 days before it is published. If a
+     listing is reversed, the name comes off the site at the next rebuild.
+   - Pending accounts, detector flags and the v7.1 high tier are leads, not confirmations. They stay hashed.
+   - Hijacked or bought accounts: only posts from the bot period (from the takeover break on) appear next to the
+     name. The earlier history was a real person's and stays hashed and aggregate.
+   - The label is attributed as "listed as a bot by Bot Bouncer", with a link to the listing, not as our own verdict.
+   - Everything else in this rule still applies to every other account, and never link a bot to a real-world identity.
 6. **Long jobs.** Every long job runs under nohup with systemd-inhibit, uses absolute paths, gets a line in
    ~/socialscope_data/jobs.tsv, and writes progress where status.sh can see it. For "wait until job X ends" loops,
    use a PID file or a pattern anchored to the start of the command line, e.g.

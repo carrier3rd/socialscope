@@ -101,8 +101,10 @@ bars, and no decoration that hides the number.
 
 ## Guard rails (these override style)
 
-- **Aggregates only.** No usernames, nicks or per-account rows in charts or text. Reddit accounts stay hashed.
-  Never per-person hostility, raid or harassment labels.
+- **Aggregates by default.** No usernames, nicks or per-account rows in charts or text, and Reddit accounts
+  stay hashed. The one exception is confirmed bots, which may be named and charted individually, but only under
+  the conditions in CLAUDE.md rule 5 (Bot Bouncer banned and rechecked, bot-period posts only, attributed to Bot
+  Bouncer). Never per-person hostility, raid or harassment labels.
 - **Flags are leads, never proof.** Say so wherever a flag rate appears. Name nothing as a bot beyond what the
   user's rules allow.
 - **Predictions are untouched.** The explainer reports what the results file says; it never rescores or reinterprets

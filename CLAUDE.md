@@ -37,7 +37,7 @@ cannot run commands. To keep the two from overwriting each other:
    - *Path 1, feed Bot Bouncer.* Detector flags plus their evidence packets are reviewed by a person and submitted
      to Bot Bouncer by the user (Claude never posts or submits on Reddit). An account Bot Bouncer bans is published
      under the rule above, with "found by socialscope".
-   - *Path 2, our own standard.* An account may be published as "suspected bot (socialscope)" only if all of these
+   - *Path 2, our own standard.* An account may be published as "bot-like behavior (socialscope)" only if all of these
      hold:
      - it meets the strict evidence bar as frozen in docs/bot-publishing-predictions.md;
      - that bar has passed its blind test (see the plan);

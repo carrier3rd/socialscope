@@ -85,3 +85,12 @@ RUNBOOK.md. old_matched was reproduced byte for byte.
   per-user parts without re-pulling.
 - **Laptop RAM fault.** Bit flips and segfaults since Nov 5-6 (page-cache copies of zips differ from disk). Results
   above are only the ones a second run reproduced exactly, except the old_last rows, marked.
+
+## Addendum, Nov 11 2026 (laptop session): old_last reproduced
+
+A second old_last run on Nov 11 (`~/socialscope_data/oldlast_check_queue.sh`, tag `old_last_check`) matched the
+originals byte for byte: `features_old_last.csv` (Nov 6), `accounts_old_last.csv` and `results_old_last.md` (rescored
+Nov 9 from the Nov 6 features; results compared without the "scored 20…" line). So the old_last rows above are now
+reproduced too, and every number in this file has been matched by a second run. The first four tries that morning
+failed reading their input (cached CRC errors, one garbled UTF-8 byte); the run that worked had
+`tools/badpage_hold` holding the 9 bad RAM pages it found. See docs/ram-fault-checks.md.

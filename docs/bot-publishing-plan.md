@@ -78,3 +78,9 @@ All four must hold:
 3. Site section for confirmed finds (Path 1), off until the first ban.
 4. Path 2 predictions file (bar frozen), then the test. The site section for suspected bots stays off until the
    test passes.
+
+## Decisions (dated)
+
+- **Nov 10, 2026, reviewer:** both. The user and the cloud session each read every packet on their own. Two "bot"
+  calls are needed to submit; any disagreement counts as "unsure" and isn't submitted. Each reviewer writes to
+  their own column in `botfinds/review.csv`, without seeing the other's call first.

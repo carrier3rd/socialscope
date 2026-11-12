@@ -1,6 +1,6 @@
 ---
 name: context-gathering
-description: Decide, per item, whether more context would change a label and which way, then fetch only the context that matters. Use when coding or classifying short texts that may depend on surrounding discourse (Reddit replies, live chat, stream transcripts, quotes, sarcasm, dogwhistles, stance, endorse-vs-quote), when building an LLM coder or RAG step that pulls a context window, or when asked whether a fixed context window is enough. Also use before trusting any coder that sees context, to run a with/without-context calibration.
+description: Decide, per item, whether more context would change a label and which way, then fetch only the context that matters. Use when coding or classifying short texts that may depend on surrounding discourse (Reddit replies, live chat, stream transcripts, quotes, sarcasm, dogwhistles, stance, endorse-vs-quote), when building an LLM coder or RAG step that pulls a context window, or when asked whether a fixed context window is enough. Also use before trusting any coder that sees context, to run a with/without-context calibration, and when a large coding job should run on a cheap model first with only the uncertain items escalated to a stronger one.
 ---
 
 # Context gathering: fetch where labels flip, not everywhere
@@ -139,6 +139,36 @@ Before using context in any new project, run `scripts/flip_calibration.py` then 
    with/without comparison under ~10% means nothing without reruns.
 6. Add human codes on the flipped items if you need to know which side was right; the calibration alone measures
    movement, not correctness.
+
+## Cascade: weak model first, stronger model only where it is measurably unsure
+
+Use `scripts/cascade.py` (steps `weak` -> `flag` -> `strong` -> `report`) when a large set needs coding and a
+strong model on everything is too costly.
+
+1. **Weak pass.** A cheap coder labels every item **K = 3 times** (Claude Haiku 5.5, or `gemini-4-hydrogen` for
+   label-token probabilities). Each item is its own request.
+2. **Flag from measured signals only.** Escalate an item if its runs disagree (`unstable`), its top-label
+   probability margin is small (`low_margin`, Gemini only), the coder wrote `SUFFICIENT: no`, or its label is one you
+   never accept from the weak model (`--escalate-labels`, e.g. ENDORSE or A, applying "fetch before you flag").
+   **Never escalate on the weak model's self-reported confidence alone**: asked whether they need more information,
+   LLMs score near chance (AUROC 0.37-0.55, Zhang & Choi 2025), two LLMs agreed on context-dependence at κ 0.26, and
+   stated confidence runs high (Xiong et al. 2024). Rerun agreement is the better signal (Kruk et al. 2024: 96.2%
+   precision for labels repeated across runs; Davani et al. 2022: spread tracks human disagreement).
+3. **Audit what wasn't flagged.** Add a random 5-10% of unflagged items to the queue. A cascade only catches errors
+   the weak model is unsure about; confident errors pass straight through, and second looks fix false positives far
+   more than misses (40% vs 6%, Kumar et al. 2024). The audit is how you see that miss rate.
+4. **STOP and ask the user.** `flag` writes `escalate.jsonl` and `summary.md` (counts, reasons, rough cost per
+   model). Show the summary and ask whether to run the strong pass and on which model. **Never pass `--yes` without
+   the user's explicit go-ahead in this conversation.**
+5. **Strong pass and report.** `strong --yes` codes the queue; `report` gives weak-vs-strong change rates on flagged
+   and audit items (95% CIs), the flag reasons behind each change, and `final.csv` (strong label where it ran).
+   Strong-model agreement is not ground truth: models share biases. For contested items, add human codes.
+
+Thresholds (`--margin`, `--audit`, K) are calibration choices: set them on a sample with known labels and
+pre-register them. Expect the unstable share to sit near the rerun noise floor (4-7% on socialscope stance), so an
+escalation queue much larger than that usually means the margin threshold is too loose. Before building a cascade,
+also try the strong model alone at lower effort: one model can be cheaper than two. Evidence for cascades as such
+(e.g. FrugalGPT-style routing) was not reviewed in these research rounds; the support above is for the components.
 
 ## Project adapters
 

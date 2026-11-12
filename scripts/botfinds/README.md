@@ -13,6 +13,8 @@ committed or pasted into chat.
 | 4 | user only | Submit through Bot Bouncer's normal Reddit process, then set `status=submitted` and `submitted_utc` in `tracker.csv`. Claude never posts. |
 | 5 | laptop, weekly | `ops/botfinds_weekly.sh`, run by `botfinds-weekly.timer` on Mondays at 06:30 (units in `ops/laptop/`), pulls the recent r/BotBouncer posts once no other Arctic Shift pull is running. `weekly_check.py` then sets each submitted account to `banned` / `pending` / `cleared` / `gone`, along with the listing link and recheck date. Log: `~/socialscope_data/botfinds_weekly.out`. A row that stays pending for more than 14 days needs a check by hand, because Arctic Shift keeps a post's flair as it was when captured. |
 
+| 6 | laptop, every site rebuild | `ops/publish_site.sh` runs `build_site_bots.py`, which writes `data/botfinds.json`. The site's Bots tab stays hidden until an account is banned, its Bot Bouncer status was checked in the last 7 days, and it has a listing link. Posts are shown only for a takeover break or an account with no earlier history, with handles, links and other users' names masked. |
+
 Candidates are control accounts (Bot Bouncer had not listed them when the groups were built) flagged at the strict
 setting:
 - **Threshold:** 0.4828, which flags about 2 in 100 ordinary accounts.

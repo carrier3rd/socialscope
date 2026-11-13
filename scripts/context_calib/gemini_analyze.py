@@ -34,7 +34,7 @@ def cxmi(i):
     pa, pb = a.get(y, 1e-7), b.get(y, 1e-7)
     return math.log(pb) - math.log(max(pa, 1e-7))
 tr = [tv(i) for i in reply if tv(i) is not None]; tt = [tv(i) for i in top if tv(i) is not None]
-P(f"G3 median TV shift: replies {st.median(tr):.4f} (n {len(tr)}); placebo " + (f"{st.median(tt):.4f} (n {len(tt)})" if tt else "not scorable (no placebo runs)"))
+P(f"G3 median TV shift: replies " + (f"{st.median(tr):.4f} (n {len(tr)})" if tr else "none yet") + "; placebo " + (f"{st.median(tt):.4f} (n {len(tt)})" if tt else "not scorable (no placebo runs)"))
 P(f"   replies with TV shift > 0.5: {sum(x > 0.5 for x in tr)}; placebo: {sum(x > 0.5 for x in tt)}")
 fl = [i for i in reply if lab("C0",1,i) and lab("C1",1,i) and lab("C0",1,i) != lab("C1",1,i)]
 nf = [i for i in reply if lab("C0",1,i) and lab("C1",1,i) and lab("C0",1,i) == lab("C1",1,i)]

@@ -18,6 +18,8 @@ def wil(k, n, z=1.96):
     p = k / n; den = 1 + z*z/n; c = p + z*z/(2*n); h = z*math.sqrt(p*(1-p)/n + z*z/(4*n*n)); return (c-h)/den, (c+h)/den
 def rate(a, b, ids, name):
     ids = [i for i in ids if lab(*a, i) and lab(*b, i)]
+    if not ids:
+        P(f"{name}: not scorable (no paired runs)"); return None
     k = sum(lab(*a, i) != lab(*b, i) for i in ids); lo, hi = wil(k, len(ids))
     P(f"{name}: {k}/{len(ids)} = {k/len(ids):.1%} (95% CI {lo:.1%}-{hi:.1%})"); return k/len(ids)
 g1 = rate(("C0",1), ("C1",1), reply, "G1 context flips, replies (C0r1 vs C1r1)")
@@ -32,11 +34,11 @@ def cxmi(i):
     pa, pb = a.get(y, 1e-7), b.get(y, 1e-7)
     return math.log(pb) - math.log(max(pa, 1e-7))
 tr = [tv(i) for i in reply if tv(i) is not None]; tt = [tv(i) for i in top if tv(i) is not None]
-P(f"G3 median TV shift: replies {st.median(tr):.4f} (mean {st.mean(tr):.4f}, n {len(tr)}); placebo {st.median(tt):.4f} (mean {st.mean(tt):.4f}, n {len(tt)})")
+P(f"G3 median TV shift: replies {st.median(tr):.4f} (n {len(tr)}); placebo " + (f"{st.median(tt):.4f} (n {len(tt)})" if tt else "not scorable (no placebo runs)"))
 P(f"   replies with TV shift > 0.5: {sum(x > 0.5 for x in tr)}; placebo: {sum(x > 0.5 for x in tt)}")
 fl = [i for i in reply if lab("C0",1,i) and lab("C1",1,i) and lab("C0",1,i) != lab("C1",1,i)]
 nf = [i for i in reply if lab("C0",1,i) and lab("C1",1,i) and lab("C0",1,i) == lab("C1",1,i)]
-mf = st.mean(abs(cxmi(i)) for i in fl) if fl else float("nan"); mn = st.mean(abs(cxmi(i)) for i in nf)
+mf = st.mean(abs(cxmi(i)) for i in fl) if fl else float("nan"); mn = st.mean(abs(cxmi(i)) for i in nf) if nf else float("nan")
 P(f"G4 mean |P-CXMI|: flipped {mf:.2f} (n {len(fl)}), not flipped {mn:.2f} (n {len(nf)})")
 P("   transitions:", dict(Counter(f"{lab('C0',1,i)}->{lab('C1',1,i)}" for i in fl)))
 cl = {int(r["item"]): r["code"] for r in csv.DictReader(open(os.path.join(d, "runs", "C1_r1_codes.csv")))}

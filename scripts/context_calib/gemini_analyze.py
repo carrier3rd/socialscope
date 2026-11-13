@@ -43,7 +43,7 @@ P(f"G4 mean |P-CXMI|: flipped {mf:.2f} (n {len(fl)}), not flipped {mn:.2f} (n {l
 P("   transitions:", dict(Counter(f"{lab('C0',1,i)}->{lab('C1',1,i)}" for i in fl)))
 cl = {int(r["item"]): r["code"] for r in csv.DictReader(open(os.path.join(d, "runs", "C1_r1_codes.csv")))}
 both = [i for i in items if lab("C1",1,i) and i in cl]
-P(f"G5 Gemini vs Claude agreement, C1 run 1: {sum(lab('C1',1,i)==cl[i] for i in both)}/{len(both)} = {sum(lab('C1',1,i)==cl[i] for i in both)/len(both):.1%}")
+P(f"G5 Gemini vs Claude agreement, C1 run 1: {sum(lab('C1',1,i)==cl[i] for i in both)}/{len(both)} = {sum(lab('C1',1,i)==cl[i] for i in both)/max(1,len(both)):.1%}")
 for i in (301, 779):
     a = norm(R.get(("C0",1,i), {}).get("dist")); b = norm(R.get(("C1",1,i), {}).get("dist"))
     P(f"G6 item {i}: labels C0 {lab('C0',1,i)}/{lab('C0',2,i)} C1 {lab('C1',1,i)}/{lab('C1',2,i)}; p(P) C0 {a and round(a['P'],4)} -> C1 {b and round(b['P'],4)}")

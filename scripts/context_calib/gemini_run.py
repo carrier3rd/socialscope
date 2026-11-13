@@ -38,6 +38,8 @@ def call(text):
                     if "retryDelay" in det:
                         try: delay = max(delay, float(det["retryDelay"].rstrip("s")) + 2)
                         except ValueError: pass
+                if code == 429 and delay > 900:  # Nov 13: daily quota exhausted -> stop instead of sleeping for hours
+                    print("QUOTA_EXHAUSTED retryDelay", delay, flush=True); sys.exit(3)
                 print("retry", code, delay, flush=True); time.sleep(min(delay, 300)); continue
             return {"error": r["error"]}
         return r
@@ -56,7 +58,8 @@ def parse(r):
                 if k in ("P", "A", "B", "N"): dist[k] = dist.get(k, 0) + math.exp(t["logProbability"])
             break
     return {"text": text, "label": (text[:1].upper() if text else ""), "dist": dist}
-jobs = [(c, r, s) for c, r, s in (("C0", 1, 31), ("C0", 2, 32), ("C1", 1, 41), ("C1", 2, 42))]
+jobs = [(c, r, s) for c, r, s in (("C0", 1, 31), ("C1", 1, 41))]  # Nov 13: scope cut to replies x C0r1/C1r1 (quota)
+items = [it for it in items if it["parent"]]
 with open(out, "a") as f:
     for cond, run, seed in jobs:
         order = items[:]; random.Random(seed).shuffle(order)

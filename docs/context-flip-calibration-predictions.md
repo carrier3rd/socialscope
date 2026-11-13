@@ -63,3 +63,10 @@ G4. Replies whose Gemini label flips have a larger mean |P-CXMI| than replies th
 G5. Gemini and Claude agree on >= 75% of C1 run-1 codes (all 150 items).
 G6. On Claude's two robust flips (items 301, 779), Gemini's probability of P rises from C0 to C1.
 G7. Replies where Gemini is unsure in C0 (top label prob < 0.9) flip at >= 2x the rate of confident ones.
+
+## Addendum 2026-11-13: Gemini arm scope reduced (before any further Gemini data)
+The free-tier key allows about 20 `gemini-4-hydrogen` calls a day. At the user's choice, the Gemini arm is cut from
+600 calls to the 113 replies coded once in each condition (C0 run 1, C1 run 1): 226 calls. 36 C0-run-1 calls were
+already made (nothing analysed). Consequences for the Gemini predictions: G2 (rerun noise) and G3 (placebo
+comparison) are not scorable; G1, G4, G5 (on the 113 replies), G6 and G7 are scored as written. G1's flip rate has
+no Gemini noise floor of its own; the Claude rerun noise (4.4-7.1%) is the reference.

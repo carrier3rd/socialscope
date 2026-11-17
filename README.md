@@ -21,6 +21,7 @@ It is also packaged as a Claude skill (`SKILL.md`). With the skill installed, Cl
 | `scripts/` | Command-line versions: coordination networks, brigading tests, blind stance coding, topics, sentiment, calibration. |
 | `docs/` | Write-ups of the October 2026 study. |
 | `SKILL.md` | Full method, rules and thresholds, written for Claude but readable as a manual. |
+| `data/antiwest/`, `docs/antiwest-lexicon.md` | Draft lexicon of campist ("tankie") anti-Western talking points: factions, 49 claims, 77 terms, research sources, and timestamped transcripts of commentary videos. Untested on data so far. |
 
 ## Ground rules
 

@@ -26,7 +26,7 @@ Needs: pip install -U yt-dlp (keep it current; YouTube changes often). If YouTub
 --cookies-from-browser firefox (or chrome). The list command reads each video's page for its date, so a channel with
 hundreds of uploads takes a few minutes; it stops at the first video older than --since.
 """
-import argparse, csv, datetime, glob, os, re, subprocess, sys, tempfile
+import argparse, csv, datetime, glob, html, os, re, subprocess, sys, tempfile, time
 
 TS = re.compile(r"^(\d\d):(\d\d):(\d\d)\.\d+ --> ")
 TAG = re.compile(r"<[^>]+>")
@@ -39,12 +39,14 @@ def clean_vtt(path):
         m = TS.match(line)
         if m:
             t = int(m[1]) * 3600 + int(m[2]) * 60 + int(m[3]); continue
-        s = TAG.sub("", line).strip()
+        # Fixed Nov 16 2026 (laptop session): YouTube's VTT escapes text ("[&nbsp;__&nbsp;]", "&gt;&gt;", "&amp;"),
+        # which was copied into the transcripts as-is. Unescape after stripping tags.
+        s = html.unescape(TAG.sub("", line)).replace("\xa0", " ").strip()
         if not s or s.startswith(("WEBVTT", "Kind:", "Language:")) or s == last:
             continue
         if last and s.startswith(last):  # rolling captions repeat the previous line
             s = s[len(last):].strip()
-        last = TAG.sub("", line).strip()
+        last = html.unescape(TAG.sub("", line)).replace("\xa0", " ").strip()
         if s:
             out.append((t, s))
     return out
@@ -116,10 +118,18 @@ def fetch(a):
         if os.path.exists(dest) and not a.force:
             print(v, "already on disk, skipping (--force to replace)"); continue
         with tempfile.TemporaryDirectory() as tmp:
-            r = ytdlp(["--skip-download", "--write-subs", "--write-auto-subs", "--sub-langs", "en.*,-live_chat",
-                       "--sub-format", "vtt", "-o", os.path.join(tmp, "%(id)s"),
-                       "--print", "after_video:%(title)s\t%(channel)s\t%(upload_date)s\t%(duration)s\t%(subtitles)s",
-                       "https://www.youtube.com/watch?v=" + v], extra)
+            # Fixed Nov 16 2026 (laptop session): back-to-back fetches got "HTTP Error 429: Too Many Requests" on the
+            # subtitle download and the video was just marked failed. Now sleeps between subtitle requests and
+            # retries a 429 up to 3 times with a growing wait.
+            for attempt in range(4):
+                r = ytdlp(["--skip-download", "--write-subs", "--write-auto-subs", "--sub-langs", "en.*,-live_chat",
+                           "--sub-format", "vtt", "--sleep-subtitles", "3", "-o", os.path.join(tmp, "%(id)s"),
+                           "--print", "after_video:%(title)s\t%(channel)s\t%(upload_date)s\t%(duration)s\t%(subtitles)s",
+                           "https://www.youtube.com/watch?v=" + v], extra)
+                if "429" not in r.stderr or attempt == 3:
+                    break
+                print(v, "HTTP 429, waiting %ds and retrying" % (60 * (attempt + 1)), flush=True)
+                time.sleep(60 * (attempt + 1))
             vtts = sorted(glob.glob(os.path.join(tmp, "*.vtt")), key=lambda p: ("-orig" not in p, len(p)))
             if r.returncode or not vtts:
                 why = (r.stderr.strip().splitlines() or ["no English captions on this video"])[-1][:160]
@@ -166,4 +176,11 @@ if __name__ == "__main__":
     for s in (f, l):
         s.add_argument("--cookies-from-browser", help="e.g. firefox; only if YouTube asks for a sign-in")
     a = p.parse_args()
+    # Fixed Nov 16 2026 (laptop session): on Windows the console is cp1252, so titles printed as "Shill � Get" and
+    # a title with an emoji would raise UnicodeEncodeError mid-run. Files were always written as UTF-8.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except AttributeError:
+            pass
     fetch(a) if a.cmd == "fetch" else listing(a)

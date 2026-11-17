@@ -163,6 +163,9 @@ arguments, not findings.
 - Both are opponents of the faction they describe. The lexicon keeps their observations as hypotheses to test
   (`rhetorical_moves.csv`, column `caution`).
 
+The later caption transcripts (section 6) are read against the research in `docs/antiwest-vod-analysis.md`, which
+sorts the videos' tests into campism markers and general left markers.
+
 Three of the checks can be tested on data we already hold, with predictions written first: the state-media link
 share by subreddit, the topic mix (states against social issues), and whether anti-Democrat volume in left subs
 rises after Democratic wins.

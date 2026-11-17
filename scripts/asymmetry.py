@@ -72,11 +72,13 @@ def load():
     return list(rows.values())
 
 
-def pull():
+def pull(only=None):
+    # Added Nov 16 2026: optional list of subs so each can run in its own process (one process per sub, never two
+    # on the same sub: they would share the raw_ files). Does not change what is pulled.
     from socialscope import arctic
     os.makedirs(DATA, exist_ok=True)
     s, e = arctic.to_ts(START), arctic.to_ts(END)
-    for sub in SUBS:
+    for sub in (only or SUBS):
         out = os.path.join(DATA, "comments_%s.jsonl" % sub)
         done = os.path.join(DATA, "done_%s.txt" % sub)
         finished = set(open(done).read().split("\n")) if os.path.exists(done) else set()
@@ -192,4 +194,6 @@ def score(paths):
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
+    if cmd == "pull" and len(sys.argv) > 2:
+        pull(sys.argv[2:]); sys.exit()
     {"pull": pull, "measure": measure, "sample": sample}.get(cmd, lambda: score(sys.argv[2:]) if cmd == "score" else print(__doc__))()

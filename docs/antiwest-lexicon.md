@@ -167,22 +167,35 @@ rises after Democratic wins.
 
 ## 6. Videos and transcripts
 
-Transcripts are in `data/antiwest/transcripts/`, one `.txt` per video, lines in the form `[HH:MM:SS] SPEAKER: text`.
-`index.csv` lists what is there. `vod_queue.csv` lists videos found but not transcribed.
+Three transcripts are in `data/antiwest/transcripts/`, one `.txt` per video, lines in the form
+`[HH:MM:SS] SPEAKER: text`:
+
+| Video | Length | What it is |
+|---|---|---|
+| `DGs4Nq4dOEw` | 1h18 | Destiny and Noah Smith, streamed about Nov 12, 2026 (public re-upload) |
+| `NEF0VNPZ7lU` | 1h23 | Destiny reacts to Ezra Klein on The Bulwark, about Nov 15, 2026 |
+| `INnln13RMnM` | 0h51 | Destiny reacts to Vaush and Soy Pill's West Bank trip, about Oct 31, 2026 |
+
+`vod_segments.csv` indexes 34 passages across them. `vod_queue.csv` lists 13 more videos found but not transcribed,
+with the reason for each.
 
 How they were made: the cloud session cannot reach YouTube or any transcript site. The Gemini API can read a public
-YouTube video directly, so `scripts/yt_gemini_transcript.py` asks it to transcribe the audio in 30-minute windows.
+YouTube video directly, so `scripts/yt_gemini_transcript.py` asks it to transcribe the audio in timed windows.
 
 Limits:
 
+- **Three videos is far short of "the last three months".** The project's Gemini key is on the free tier, 20
+  requests per model per day, and the one model that transcribes reliably (gemini-3.5-flash) ran out after two
+  videos. Two fallback models stopped early on long videos, so I discarded their partial output for two videos
+  and kept the one that looks complete. At this quota the reliable model manages about five hour-long videos a day.
 - They are a model's transcription, not YouTube's captions. Names and numbers can be wrong. Speaker labels are the
-  model's guess. I found one passage repeated twice in INnln13RMnM (00:23:43 and 00:25:58).
-- The project's Gemini key is on the free tier: 20 requests per model per day. That is roughly five to eight hours
-  of video a day across the models that work. It is why only part of the last three months is here.
-- The original Noah Smith stream (x2d5D2lsi9w) and two other videos returned "permission denied". The Noah Smith
-  conversation was read from a public re-upload (DGs4Nq4dOEw, 1 hour 18 minutes; it may be shorter than the stream).
-- I could not list Destiny's channel, so the video list came from web search and is not complete.
-- On the laptop, `yt-dlp` captions are better and free; `scripts/transcript_chunks.py` already reads them.
+  model's guess. Four long lines are repeated in `INnln13RMnM` (for example 00:23:43 and 00:25:58).
+- The original Noah Smith stream (`x2d5D2lsi9w`) and two other videos returned "permission denied". The
+  conversation was read from a public re-upload, which may be shorter than the stream.
+- I could not list Destiny's channel, so the video list came from web search. It is not complete and its dates are
+  approximate.
+- On the laptop, `yt-dlp` captions are better and free; `scripts/transcript_chunks.py` already reads them. The
+  queue file gives the IDs.
 
 ## 7. Before any number from this is reported
 

@@ -6,7 +6,7 @@
 # speakers: Destiny, Noah Smith, MrMouton
 # duration: 01:18:15
 # source: machine transcript by gemini-3.5-flash from the video audio, fetched 2026-11-17; unverified, check quotes against the video
-# segments: 5 of 6 transcribed
+# segments: 6 of 6 transcribed (00:15:00-00:30:00 added in a second pass)
 
 [00:00:00] Noah Smith: Hey, I can hear you.
 [00:00:01] Destiny: Cool, I can hear you too.

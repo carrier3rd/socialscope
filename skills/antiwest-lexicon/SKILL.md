@@ -58,8 +58,10 @@ YouTube, yt-dlp and transcript sites are blocked here. Gemini can read public Yo
    is fine when the original returns HTTP 403.
 2. `python3 scripts/yt_gemini_transcript.py <id> [<id> ...]` writes `data/antiwest/transcripts/<id>.txt` and updates
    `index.csv`. Use `--fill` to retry ranges marked `# MISSING`.
-3. Quota: free tier, 20 requests per model per day; one request per 30-minute window plus one per video. The script
-   rotates through `--model a,b,c` and stops when all are spent. Record what was not fetched in `vod_queue.csv`.
+3. Quota: free tier, 20 requests per model per day; one request per 30-minute window plus one per video, so about
+   five hour-long videos a day. Use the default model (gemini-3.5-flash). Other models stopped early on long videos
+   in testing; if you use one, compare the last timestamp with the video's real length and discard partials.
+   Record what was not fetched in `vod_queue.csv`, and remove rows from it as they are done.
 4. On the laptop, use yt-dlp captions instead (`scripts/transcript_chunks.py`).
 5. These are machine transcripts. Say so wherever they are quoted, and check a quote against the video before it is
    published.

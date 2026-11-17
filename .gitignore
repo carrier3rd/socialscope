@@ -17,3 +17,6 @@ __pycache__/
 .ipynb_checkpoints/
 out/
 *_private.csv
+
+# transcript script debug output
+*.raw

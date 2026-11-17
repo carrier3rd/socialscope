@@ -6,7 +6,7 @@ transcript sites are all blocked. On the laptop, prefer yt-dlp captions (scripts
 they are YouTube's own captions, while these are a model's transcription of the audio.
 
   python3 scripts/yt_gemini_transcript.py VIDEO_ID_OR_URL [more ...] -o data/antiwest/transcripts
-  python3 scripts/yt_gemini_transcript.py VIDEO_ID --minutes 30 --model gemini-3-flash-preview,gemini-4-hydrogen
+  python3 scripts/yt_gemini_transcript.py VIDEO_ID --minutes 15 --duration 4998 --workers 6   # length known: parallel
   python3 scripts/yt_gemini_transcript.py VIDEO_ID --fill      # retry only the ranges marked MISSING
 
 Per video it writes <out>/<id>.txt:
@@ -21,8 +21,11 @@ Segments run in order until one ends well short of its window, which is taken as
 
 Quota (found Nov 17 2026): the project's Gemini key is on the free tier, 20 requests per model per day. One request
 is one segment, so a 90-minute video at --minutes 30 costs 4 requests (3 segments + 1 for the title). --model takes a
-comma-separated list and moves to the next model when one runs out for the day. Videos that are private,
-members-only or age-restricted return HTTP 403 and cannot be read this way.
+comma-separated list and moves to the next model when one runs out for the day. Only gemini-3.5-flash has been
+reliable: on Nov 17 2026 gemini-3-flash-preview / gemini-4-hydrogen got one 50-minute video right, then stopped a
+long debate at 00:03:01 and cut another video at 00:08:29, so they are not in the default list. Check the last
+timestamp of any transcript against the video's real length. Videos that are private, members-only or
+age-restricted return HTTP 403 and cannot be read this way (3 of 14 tried).
 
 Limits to state whenever these transcripts are used:
   - Machine transcription. Names and numbers can be wrong; speaker labels are the model's guess from voice and context.
@@ -118,7 +121,7 @@ def one(v, a, speakers, seg, depth=0):
                                 {"max_output_tokens": 65536, "media_resolution": "MEDIA_RESOLUTION_LOW"})
     except Exception as ex:
         return seg, None, str(ex)
-    lines = []
+    lines, recent = [], []
     for ln in text.splitlines():
         m = LINE.match(ln.strip())
         if not m:
@@ -126,11 +129,12 @@ def one(v, a, speakers, seg, depth=0):
         t = int(m[1] or 0) * 3600 + int(m[2]) * 60 + int(m[3])
         if t < s - 5 and t <= e - s + 5:   # model gave segment-relative times; shift to absolute
             t += s
-        if s - 5 <= t <= e + 30:
+        if s - 5 <= t <= e + 30 and m[4] not in recent:   # a looping model repeats a line; keep the first copy only
             lines.append("[%s] %s" % (hms(t), m[4]))
+            recent = (recent + [m[4]])[-5:]
     if not lines and text.strip() != "END":
         os.makedirs(a.out, exist_ok=True)   # keep what the model said, so the failure can be read
-        open(os.path.join(a.out, "%s_%d.raw" % (v, s)), "w", encoding="utf-8").write(text)
+        open(os.path.join(a.out, "%s_%d.raw" % (v, s)), "w", encoding="utf-8").write(text)   # .raw is gitignored
         return seg, None, "no parseable lines (finish %s, %s)" % (fin, model)
     if fin == "MAX_TOKENS" and lines and depth < 4 and s + 60 < last_t(lines) < e - 60:
         # The model ran out of output before the end of the window (seen Nov 17 2026: a 30-minute window cut at
@@ -229,9 +233,10 @@ def fetch(v, a):
     open(out, "w", encoding="utf-8").write("\n".join(head + body) + "\n")
     idx = os.path.join(a.out, "index.csv")
     rows = list(csv.DictReader(open(idx, encoding="utf-8"))) if os.path.exists(idx) else []
-    cols = ["id", "url", "title", "channel", "duration_s", "segments_ok", "segments_total", "words", "fetched"]
+    cols = ["id", "url", "title", "channel", "duration_s", "segments_ok", "segments_total", "words", "fetched",
+            "model", "note"]   # note is filled in by hand (what the video is, known defects)
     rows = [r for r in rows if r["id"] != v] + [dict(zip(cols, [v, "https://www.youtube.com/watch?v=" + v,
-            meta.get("title", ""), meta.get("channel", ""), dur, ok, len(res), words, today]))]
+            meta.get("title", ""), meta.get("channel", ""), dur, ok, len(res), words, today, "/".join(a.models), ""]))]
     with open(idx, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, cols, extrasaction="ignore"); w.writeheader(); w.writerows(rows)
     print("%s  %s  %d/%d segments, %d words -> %s" % (v, hms(dur), ok, len(res), words, out), flush=True)
@@ -241,8 +246,8 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("videos", nargs="+")
     p.add_argument("-o", "--out", default="data/antiwest/transcripts")
-    p.add_argument("--model", default="gemini-3.5-flash,gemini-3-flash-preview,gemini-4-hydrogen",
-                   help="comma-separated; the next one is used when a model's daily quota runs out")
+    p.add_argument("--model", default="gemini-3.5-flash",
+                   help="comma-separated; the next one is used when a model's daily quota runs out (see Quota above)")
     p.add_argument("--minutes", type=int, default=30, help="segment length")
     p.add_argument("--workers", type=int, default=4, help="parallel segments, only with --duration")
     p.add_argument("--duration", type=int, help="video length in seconds, if known")

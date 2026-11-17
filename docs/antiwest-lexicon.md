@@ -20,6 +20,8 @@ reported.
 | `data/antiwest/transcripts/` | Timestamped machine transcripts of Destiny videos, plus `index.csv` |
 | `data/antiwest/vod_segments.csv` | Timestamped passages with a link to the second, the talking points involved, a paraphrase and a checked quote |
 | `data/antiwest/vod_queue.csv` | Videos found but not yet transcribed, and why |
+| `data/antiwest/vod_channel.csv` | Every upload on the Destiny YouTube channel since Aug 17, 2026, with date and length |
+| `scripts/yt_captions.py` | Lists a channel and fetches YouTube captions with yt-dlp, on the laptop |
 | `scripts/yt_gemini_transcript.py` | Gets a timestamped transcript of a YouTube video from the cloud session |
 | `scripts/transcript_segments.py` | Indexes passages in a transcript and checks every quote against it |
 | `scripts/antiwest_tag.py` | Counts lexicon hits in transcripts or Reddit dumps, per group, never per account |
@@ -167,35 +169,70 @@ rises after Democratic wins.
 
 ## 6. Videos and transcripts
 
-Three transcripts are in `data/antiwest/transcripts/`, one `.txt` per video, lines in the form
-`[HH:MM:SS] SPEAKER: text`:
+Twenty transcripts are in `data/antiwest/transcripts/`, one `.txt` per video (about 30.5 hours), with a row each in
+`index.csv`. Lines are `[HH:MM:SS] SPEAKER: text` in the three Gemini transcripts and `[HH:MM:SS] text`, about every
+30 seconds, in the seventeen caption transcripts.
 
-| Video | Length | What it is |
-|---|---|---|
-| `DGs4Nq4dOEw` | 1h18 | Destiny and Noah Smith, streamed about Nov 12, 2026 (public re-upload) |
-| `NEF0VNPZ7lU` | 1h23 | Destiny reacts to Ezra Klein on The Bulwark, about Nov 15, 2026 |
-| `INnln13RMnM` | 0h51 | Destiny reacts to Vaush and Soy Pill's West Bank trip, about Oct 31, 2026 |
+**Machine transcripts by Gemini (speaker labels are the model's guess):**
 
-`vod_segments.csv` indexes 34 passages across them. `vod_queue.csv` lists 13 more videos found but not transcribed,
-with the reason for each.
+| Video | Length | What it is | Passages |
+|---|---|---|---|
+| `DGs4Nq4dOEw` | 1h18 | Destiny and Noah Smith, streamed about Nov 12, 2026, posted Nov 14 | 22 |
+| `NEF0VNPZ7lU` | 1h23 | Destiny reacts to Ezra Klein on The Bulwark, about Nov 15, 2026 | 8 |
+| `INnln13RMnM` | 0h51 | Destiny reacts to Vaush and Soy Pill's West Bank trip, about Oct 31, 2026 | 4 |
 
-How they were made: the cloud session cannot reach YouTube or any transcript site. The Gemini API can read a public
-YouTube video directly, so `scripts/yt_gemini_transcript.py` asks it to transcribe the audio in timed windows.
+**YouTube auto-captions via `scripts/yt_captions.py` (fetched Nov 16, 2026 on the laptop; no speaker labels):**
+
+| Video | Length | Uploaded | Channel | What it is | Passages |
+|---|---|---|---|---|---|
+| `tkab3gPpXjA` | 4h26 | 2026-08-17 | Destiny | "Liberal CIVIL WAR Over DSA": liberal panel on DSA nominees and entryism, with a DSA-member YouTuber | 62 |
+| `KXslvrBBCyo` | 2h17 | 2026-08-30 | Destiny | "3V1 DSA Debate": reaction to a panel on joining DSA, then Destiny vs. Dylan Burns on DSA and Ukraine | 18 |
+| `UszLyg0TfGk` | 1h30 | 2026-09-01 | Destiny | "Explaining Hasan, MAGA & Populism": call on spotting tankies vs. progressives; DSA and Ukraine | 21 |
+| `jTnsRrJMHnw` | 1h17 | 2026-09-02 | Destiny | "Lamenting Tim Pool & Hasanabi": mostly the Tim Pool debate; little on campism | 9 |
+| `v4G3BQXJYy8` | 1h01 | 2026-09-16 | Destiny | "Total Hasan MELTDOWN": reaction, then a fan documentary about Hasan Piker | 9 |
+| `EsJK1qI4zks` | 1h58 | 2026-10-18 | Destiny | Reaction to Mehdi Hasan interviewing Neera Tanden on Al Jazeera; mostly intra-Democrat | 13 |
+| `cI-qIFHwkEE` | 1h23 | 2026-10-19 | Destiny | "Abdul El Sayed Disavows Hasan Piker" | 7 |
+| `QAbf21awiOw` | 0h26 | 2026-11-11 | clip channel | Michigan Senate race; reaction to a left streamer | 6 |
+| `KaxwDXVtTiw` | 0h19 | 2026-11-07 | clip channel | "Lefties Claim Credit For Midterm Sweep" | 8 |
+| `VL3gu403rVs` | 0h58 | 2026-10-30 | clip channel | Reaction to two left streamers on an NGO-funded West Bank trip | 10 |
+| `rNpMQscXNF4` | 1h17 | 2026-10-13 | clip channel | Reaction to a video on Israel's aims in Gaza and Lebanon; little on campism | 6 |
+| `h3xM9A9uIyY` | 1h15 | 2026-02-10 | clip channel | Destiny plays a liberal panel arguing with two left guests about Gaza non-voting | 12 |
+| `YHc1nsVqxkI` | 3h40 | 2026-07-29 | clip channel | Discord debate on DSA, Mamdani's endorsements, NATO and Hamas | 35 |
+| `z_mHlhhc4Hg` | 2h20 | 2026-04-25 | Destiny | Panel with a social-democrat guest on progressives vs. Marxists and the far-left media | 24 |
+| `LxzUiRRhVkw` | 0h12 | 2026-01-27 | clip channel | Reaction to Hasan Piker's claims about Destiny's China trip | 3 |
+| `NRxAPM8UDlw` | 0h22 | 2025-11-16 | clip channel | Reaction to Hasan Piker's China streams and CGTN interview | 9 |
+| `v7-7rtt8J0I` | 2h11 | 2024-02-03 | Destiny | Earlier Noah Smith conversation, mostly China's military and US economics | 10 |
+
+`vod_segments.csv` indexes 296 passages across the twenty, every quote checked against its transcript (`quote_ok` 1).
+The 262 caption passages were written by hand after a full read. `vod_queue.csv` lists the 2 videos still missing.
+
+`vod_channel.csv` lists all 86 uploads on the Destiny YouTube channel from Aug 17 to Nov 14, 2026 (about 150
+hours), from `yt_captions.py list`. Eight of them are transcribed: the Noah Smith conversation and the seven titles that
+matched the filter `tankie|leftis|lefties|hasan|china|russia|ukraine|america|socialis|communis|dsa|noah`, about 15
+of the 150 hours. The other twelve transcripts come from the earlier search-based queue.
 
 Limits:
 
-- **Three videos is far short of "the last three months".** The project's Gemini key is on the free tier, 20
-  requests per model per day, and the one model that transcribes reliably (gemini-3.5-flash) ran out after two
-  videos. Two fallback models stopped early on long videos, so I discarded their partial output for two videos
-  and kept the one that looks complete. At this quota the reliable model manages about five hour-long videos a day.
-- They are a model's transcription, not YouTube's captions. Names and numbers can be wrong. Speaker labels are the
-  model's guess. Four long lines are repeated in `INnln13RMnM` (for example 00:23:43 and 00:25:58).
-- The original Noah Smith stream (`x2d5D2lsi9w`) and two other videos returned "permission denied". The
-  conversation was read from a public re-upload, which may be shorter than the stream.
-- I could not list Destiny's channel, so the video list came from web search. It is not complete and its dates are
-  approximate.
-- On the laptop, `yt-dlp` captions are better and free; `scripts/transcript_chunks.py` already reads them. The
-  queue file gives the IDs.
+- **Eight of 86 channel videos is a title-filtered sample, not "the last three months".** The other 78 uploads (about
+  135 hours) were not fetched. Titles miss on-topic streams, and several of the matches turned out to be mostly about
+  other things (Tim Pool, Israel, intra-Democrat fights). Fetching the rest is one command
+  (`yt_captions.py fetch --from data/antiwest/vod_channel.csv --cookies-from-browser firefox`), but indexing it by hand
+  is the slow part.
+- Ten transcripts are from before the three-month window or from clip channels. They came from the earlier search
+  queue and are kept because they are on topic, but they are not a sample of anything.
+- **Caption transcripts have no speaker labels.** In reaction videos Destiny's voice and the clip run together. Rows
+  say "Destiny" only when the context makes it clear. Otherwise they say "speaker unclear" or give a role ("panelist",
+  "caller", "left guest (clip)"). Small creators and private guests are labelled by role, not name.
+- Auto-captions mishear names ("Rashidita Talib", "Medhi Hasan") and censor profanity as `[ __ ]`. Quotes are copied
+  as captioned. For `h3xM9A9uIyY` YouTube offered only a machine-translated "en" track, though it reads as normal
+  English.
+- The three Gemini transcripts are a model's transcription. Names and numbers can be wrong, and four long lines are
+  repeated in `INnln13RMnM` (for example 00:23:43 and 00:25:58). They were kept, not replaced by captions.
+- `NEF0VNPZ7lU` and `INnln13RMnM` are not in the channel listing, so their dates are still approximate.
+- Failed or missing: `JWU9jl1Ixs8` and `gNPwYYdBM-8` (the uploader's YouTube account was terminated) are still in the
+  queue. The private stream `x2d5D2lsi9w` was dropped from the queue because `DGs4Nq4dOEw` is the same conversation.
+- On the laptop, YouTube sometimes answers caption requests with HTTP 429. Retrying with
+  `--cookies-from-browser firefox` worked. Chrome's cookie store was not found and Edge's could not be decrypted.
 
 ## 7. Before any number from this is reported
 

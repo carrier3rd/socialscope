@@ -169,7 +169,7 @@ toward anything (lexicon doc, section 7).
 
 | Candidate | Kind | Source | Why | Caution |
 |---|---|---|---|---|
-| MOVE-11 Peace for Ukraine, liberation for Palestine | rhetorical move | T2 | The most specific campism test in the videos. It is a contrast within one speaker, so it can be checked in text. | Needs both halves from the same author or thread. Wanting a ceasefire in both wars is not this move. |
+| MOVE-11 Peace for Ukraine, liberation for Palestine | rhetorical move | T2 | The most specific campism test in the videos. It is a contrast within one speaker, so it can be checked in text. | Needs both halves from the same author or thread. Wanting a ceasefire in both wars is not this move. **Tested Nov 17 2026: not adopted** (`ukraine-palestine-asymmetry-results.md`; the keyword version fails, mostly because Ukraine "peace" talk is about the news). |
 | MOVE-12 Disagreement as manufactured consent | rhetorical move | T8 | Explains away all opposition as propaganda. Pairs with MOVE-02 and EMP-08. | "Manufactured consent" is also an academic term (Herman and Chomsky). Count it only when it replaces an answer to the argument. |
 | "dirty break", "clean break" | vocabulary | T6 | DSA-internal strategy terms with little ordinary meaning. | They mark DSA strategy talk, not campism. Factions: POP, DSA caucuses. Specificity: high for the faction, low for campism. |
 | "revolutionary potential", "contradictions of capital" | vocabulary | T15 | Marxist register (ML, ANTICAMP, academics). | Shared by every Marxist tendency. Tier 2 at most. |

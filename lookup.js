@@ -130,9 +130,19 @@
   // ---------- card
   const pc = (v, d = 0) => (100 * v).toFixed(d) + "%";
   const off = (o) => "UTC" + (o >= 0 ? "+" : "−") + Math.abs(o);
-  // Report box (Nov 19 2026): at rating 7+ (the 2% line), a ready-to-copy note the visitor can take to Bot Bouncer
+  // Report box (Nov 19 2026): at rating 9+ (the strict line) with a solicitation sign (see the gate below), a ready-to-copy note the visitor can take to Bot Bouncer
   // themselves. It is built and copied in the browser only; nothing is sent to this site, and we never submit.
   function report(user, R, warns) {
+    // Nov 19 2026 gate: the submit button needs the strict line (rating 9+) AND a solicitation sign. On the v7.1
+    // train (out-of-fold) and test accounts, that cut ordinary accounts flagged at the strict line from 1.15% to 0.44%
+    // while known bots caught fell from 60% to 41%. Rhythm, repeats, AI style and rapid posting did not separate
+    // flagged bots from flagged people, so they are not used here.
+    if (!(R.solicit_handle || R.solicit_broad)) return `
+<div class="card lk-report lk-hold">
+  <h2>Not enough for a Bot Bouncer report</h2>
+  <p class="note">The score is high, but this account shows neither solicitation sign we check (a contact-handle template, or a turn to NSFW or soliciting). In our tests, asking for one of those signs on top of the score cut the ordinary accounts we wrongly flag at this line from about 1 in 87 to about 1 in 230, while still catching about 4 in 10 known bots. The other signals on this page, like a sleep rhythm, looked the same in bots and in people, so they can't settle it.</p>
+  <p class="note">If you've read the account's posts yourself and it clearly pushes a product, a cheat, a link or a scam, you can still report it on <a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">r/BotBouncer</a>. Report only accounts you genuinely think are bots.</p>
+</div>`;
     const note = [
       `Suspected bot: u/${user} (https://www.reddit.com/user/${user})`,
       `The socialscope bot detector (v7.1) rated it ${R.rating_text}/10, a higher score than ${pc(R.control_pct)} of ordinary accounts in its test set.` +
@@ -161,16 +171,16 @@
     if (rh.status === "clear rhythm") {
       tz = `fits ${off(rh.band[0])} to ${off(rh.band[1])}`;
       const q = rh.quiet_start;
-      rtxt = `${pc(rh.quiet_share, 1)} of items fall in the quietest 6 hours (${String(q).padStart(2, "0")}:00-${String((q + 6) % 24).padStart(2, "0")}:00 UTC).`;
+      rtxt = `${pc(rh.quiet_share, 1)} of items fall in the quietest 6 hours (${String(q).padStart(2, "0")}:00-${String((q + 6) % 24).padStart(2, "0")}:00 UTC). Not evidence either way: in our tests about half of the known bots kept a clear rhythm too.`;
     } else if (rh.status === "no clear rhythm") {
       tz = "no estimate";
-      rtxt = `No clear rest period: ${pc(rh.quiet_share, 1)} of items fall even in the quietest 6 hours. Round-the-clock posting fits a shared or automated account.`;
+      rtxt = `No clear rest period: ${pc(rh.quiet_share, 1)} of items fall even in the quietest 6 hours. Round-the-clock posting fits a shared or automated account. A weak sign: in our tests it was a bit more common in known bots (about 1 in 10) than in flagged ordinary accounts (about 1 in 25).`;
     } else { tz = "no estimate"; rtxt = `Too few items (${rh.n}) to read a rhythm.`; }
     const us = pc(de.us_share);
     const sig = [
       [R.default_name ? "warn" : "ok", R.default_name ? "Reddit-style default name" : "Chosen name",
         R.default_name ? "Pattern Word-Word-1234. Many real users keep it, so it's only a weak signal." : "Not the default pattern."],
-      [rh.status === "clear rhythm" ? "ok" : "warn", "Day-night rhythm", rtxt],
+      [rh.status === "no clear rhythm" ? "warn" : "info", "Day-night rhythm", rtxt],   // Nov 19 2026: a clear rhythm is no longer shown as a reassuring check (bots 55%, flagged humans 57%)
       [R.mismatch ? "warn" : "ok", "Time zone vs. where it presents",
         R.mismatch ? `Presents as US (${us} of items in US subs), but its active hours fit ${tz}. Only a lead: shift workers, people abroad and scheduling tools look the same.`
           : R.us_presenting ? `${us} of items in US subs, active hours ${tz}. No mismatch.` : `Not US-presenting (${us} of items in US subs), active hours ${tz}.`],
@@ -194,7 +204,7 @@
   <div class="lk-ends"><span>Ordinary</span><span>Flag lines at 5, 7 and 9</span><span>Strict flag</span></div>
   <p class="lk-v lk-${R.tone}">${esc(R.verdict)}</p>
   <p class="note">Detector score ${R.score.toFixed(4)}: higher than ${pc(R.control_pct)} of ${R.control_n} ordinary accounts in our test set. Rule flags: ${esc(R.flag_list || "none")}.</p>
-</div>${R.rating >= 7 ? report(user, R, warns) : ""}
+</div>${R.rating >= 9 ? report(user, R, warns) : ""}
 <div class="grid">
   <div class="card"><h2>Signals</h2><ul class="lk-s">${sigHtml}</ul><p class="note">Only the detector score sets the rating. These signals are for you to weigh.</p></div>
   <div class="card"><h2>Top subreddits</h2><table class="tbl lk-t">${rows(de.top_subs.map(([k, v]) => ["r/" + k, v]))}</table></div>

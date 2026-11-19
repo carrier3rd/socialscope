@@ -121,7 +121,7 @@ h2 { font-size: 16px; font-weight: 600; margin: 0; }
 .lk-s li { padding: 8px 0 8px 22px; border-top: 1px solid var(--line); position: relative; }
 .lk-s li:first-child { border-top: 0; }
 .lk-s li::before { position: absolute; left: 0; top: 8px; font-weight: 700; }
-.lk-s li.ok::before { content: "✓"; color: var(--ok); } .lk-s li.warn::before { content: "!"; color: var(--warn); }
+.lk-s li.ok::before { content: "✓"; color: var(--ok); } .lk-s li.warn::before { content: "!"; color: var(--warn); } .lk-s li.info::before { content: "–"; color: var(--muted); }
 .lk-s b { display: block; font-weight: 600; } .lk-s span { color: var(--muted); font-size: 13px; }
 .lk-t td { padding: 4px 0; border-top: 1px solid var(--line); } .lk-t td.num { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
 .lk-t { width: 100%; border-collapse: collapse; margin-top: 8px; }

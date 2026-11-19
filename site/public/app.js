@@ -1,9 +1,11 @@
 (() => {
   "use strict";
-  // socialscope site (split from the DGG chat site on Nov 19 2026): Lookup (lookup.js), Bots and About tabs.
+  // socialscope site (split from the DGG chat site on Nov 19 2026): Bots and About tabs. Lookup has its own page
+  // (lookup.html, since Nov 19 2026); old #lookup links forward there.
   const $ = (s) => document.querySelector(s);
 
   // ---------- tabs
+  if (location.hash === "#lookup") { location.replace("lookup.html"); return; }
   const tabs = [...document.querySelectorAll(".tabs button")];
   const show = (name) => {
     tabs.forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
@@ -11,7 +13,7 @@
     if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
   };
   tabs.forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
-  const fromHash = () => { const t = (location.hash || "#lookup").slice(1).replace(/[^a-z]/g, ""); return ["lookup", "bots", "about"].includes(t) ? t : "lookup"; };
+  const fromHash = () => { const t = (location.hash || "#bots").slice(1).replace(/[^a-z]/g, ""); return ["bots", "about"].includes(t) ? t : "bots"; };
   window.addEventListener("hashchange", () => show(fromHash()));
   show(fromHash());
 

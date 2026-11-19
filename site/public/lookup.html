@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Check a Reddit account · socialscope</title>
+<meta name="description" content="Score any Reddit account with the socialscope bot detector, entirely in your own browser. Nothing is sent to this site or saved.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>socialscope bot tools</h1>
+    <p class="sub">Score any Reddit account with our bot detector, in your own browser.</p>
+    <nav class="tabs">
+      <a class="tablink" href="lookup.html" aria-current="page">Lookup</a>
+      <a class="tablink" href="./#bots">Bots</a>
+      <a class="tablink" href="./#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="tab">
+    <div class="card">
+      <h2>Check a Reddit account</h2>
+      <p class="note">Type a username to score it with our bot detector (v7.1). Everything runs in your browser: your browser fetches the account's public posts and comments from <a href="https://arctic-shift.photon-reddit.com" rel="noopener">Arctic Shift</a>, an independent Reddit archive, and the score is worked out on this page. Nothing is sent to this site, saved or shared, and the name you type never goes into the page address.</p>
+      <!-- Never submits natively: no input has a name and the inline handler blocks navigation, so the username can't reach the URL even before lookup.js loads. -->
+      <form id="lk-form" class="lk-form" autocomplete="off" onsubmit="return false">
+        <label for="lk-user" class="lab">Username</label>
+        <div class="lk-row"><span class="lk-u">u/</span><input id="lk-user" spellcheck="false" maxlength="24" placeholder="username" required><button id="lk-go" type="submit" disabled>Check</button></div>
+      </form>
+      <div class="lk-bar" id="lk-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+        <div class="lk-track"><div class="lk-fill" id="lk-fill"></div></div>
+        <p class="lk-bartxt" id="lk-bartxt" aria-live="polite"></p>
+      </div>
+      <p class="status" id="lk-status" aria-live="polite"></p>
+    </div>
+    <div id="lk-result"></div>
+    <div class="card prose">
+      <h2>How to read it</h2>
+      <p class="note">The rating runs from 1 to 10. Each step marks one of the detector's tested lines: <b>5</b> is the loose line (about 7 in 100 ordinary accounts reach it), <b>7</b> is the 2% line, and <b>9</b> is the strict line (about 2 in 100 ordinary accounts). The detector was trained on accounts that the volunteer project <a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">Bot Bouncer</a> banned. A high rating is a lead for a closer look, not proof. Real people get flagged too. The time-zone and location clues come from posting hours and place subreddits. They're rough guesses and aren't part of the score. Arctic Shift can run a few days behind Reddit, and only the newest 1,000 posts and 1,000 comments are read.</p>
+    </div>
+  </section>
+</main>
+<script src="lookup.js" defer></script>
+</body>
+</html>

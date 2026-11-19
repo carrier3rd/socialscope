@@ -1,5 +1,5 @@
 #!/bin/bash
-# Rebuild the socialscope site (Lookup and Bots tabs) and push it to this repo's gh-pages branch.
+# Rebuild the socialscope site (Lookup page, Bots and About tabs) and push it to this repo's gh-pages branch.
 # Split from the DGG chat site on Nov 19 2026 (the DGG site now lives in the dgg-chat-site repo).
 # Run every 15 minutes by socialscope-site.timer, so a reversed Bot Bouncer listing comes off at the next rebuild.
 set -euo pipefail
@@ -14,7 +14,7 @@ for f in signals.py hijack.py prewindow.py history.py lookup_core.py salt.py sou
 : > "$SITE/py/socialscope/__init__.py"
 # Version-tag app.js, lookup.js and style.css so browsers pick up new code at once (Pages caches them for 10 minutes).
 v=$(cat "$SITE/app.js" "$SITE/style.css" "$SITE/lookup.js" "$SITE"/py/socialscope/* | sha1sum | cut -c1-8)
-sed -i "s#href=\"style.css\"#href=\"style.css?v=$v\"#; s#src=\"app.js\"#src=\"app.js?v=$v\"#; s#src=\"lookup.js\"#src=\"lookup.js?v=$v\"#" "$SITE/index.html"
+sed -i "s#href=\"style.css\"#href=\"style.css?v=$v\"#; s#src=\"app.js\"#src=\"app.js?v=$v\"#; s#src=\"lookup.js\"#src=\"lookup.js?v=$v\"#" "$SITE/index.html" "$SITE/lookup.html"
 : > "$SITE/.nojekyll"
 mkdir -p "$SITE/data"
 # Bots tab (Nov 11 2026): confirmed bot finds, rewritten every run so a reversed listing comes off at once.

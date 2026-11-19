@@ -19,6 +19,9 @@ h1 { font: 400 clamp(24px, 4vw, 32px)/1.2 Georgia, "Times New Roman", serif; mar
 .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: inherit;
   padding: 8px 12px; cursor: pointer; white-space: nowrap; }
 .tabs button[aria-selected=true] { color: var(--fg); border-bottom-color: var(--s2); }
+.tabs a.tablink { color: var(--muted); text-decoration: none; border-bottom: 2px solid transparent; padding: 8px 12px; white-space: nowrap; }
+.tabs a.tablink:hover, .tabs a.tablink[aria-current=page] { color: var(--fg); }
+.tabs a.tablink[aria-current=page] { border-bottom-color: var(--s2); }
 main { padding-top: 22px; padding-bottom: 40px; }
 .tab { display: grid; gap: var(--gap); }
 .tab[hidden] { display: none; }

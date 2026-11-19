@@ -1,6 +1,6 @@
 # Bluesky module: Phase 0 recon
 
-Written Nov 19, 2026 by the cloud session, from the repo at commit 925f8a7. Spec: `docs/BLUESKY_POLITICS_SPEC.md`.
+Written Nov 19, 2026 by the cloud session, from the repo at commit 31417f6. Spec: `docs/BLUESKY_POLITICS_SPEC.md`.
 No code has been written. Nothing here read any Bluesky data. Section 5 lists the decisions I need from the owner
 before Phase 1.
 

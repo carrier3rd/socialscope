@@ -1,0 +1,7 @@
+[Unit]
+Description=Publish the socialscope site (Lookup and Bots tabs)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/probs/socialscope/ops/publish_socialscope_site.sh

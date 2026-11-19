@@ -1,5 +1,13 @@
 # CLAUDE.md
 
+**Repository split (Nov 19 2026).** socialscope covers Reddit and Bluesky. DGG chat work (live logger, chat pull,
+OverRustle archive, glossary, the DGG stats site and its docs) moved with its history to
+[dgg-chat-site](https://github.com/carrier3rd/dgg-chat-site), which has its own CLAUDE.md with the DGG rules.
+The Bots and Lookup tabs moved to the socialscope site (https://carrier3rd.github.io/socialscope/), published from
+this repo's `gh-pages` branch (worktree `~/socialscope-pages`) by `ops/publish_socialscope_site.sh` every 15 minutes.
+The same day this repo's history was rewritten to remove the owner's name (docs/history-rewrite-2026-11-19.md):
+re-clone; never push from a copy made before that rewrite.
+
 ## Working with the cloud session
 
 Two Claude sessions work on this project: the laptop session (Claude Code on the laptop, which runs every job) and
@@ -17,7 +25,7 @@ cannot run commands. To keep the two from overwriting each other:
    `*-results.md` file, misses included.
 4. **Check before editing the other session's scripts.** Read a script's current contents before editing it. Fix
    bugs in place with a short comment saying what was wrong and when (like the websocket ping comment in
-   scripts/dgg_live_logger.py), so the other session can see why it changed.
+   dgg-chat-site's scripts/dgg_live_logger.py), so the other session can see why it changed.
 5. **Privacy.** Changed Nov 5 2026 by the owner: DGG chat nicks are now kept raw. The live logger stores "nick" next
    to the hash "u" (HMAC-SHA256 with ~/socialscope/.socialscope_salt, first 16 hex chars), and the public site
    shows DGG handles in its chatter tables (message counts and activity only). Still in force: never print the
@@ -46,7 +54,7 @@ cannot run commands. To keep the two from overwriting each other:
      If the bar has not passed, or later fails, nothing goes up this way.
    - Packets, review notes and the submission tracker contain usernames: they live in ~/socialscope_data/botfinds/
      and are never committed.
-   **Lookup tab (added Nov 13 2026 by the user).** The public site may have a lookup that scores one account the
+   **Lookup tab (added Nov 13 2026 by the user).** The public socialscope site may have a lookup that scores one account the
    visitor types, with the frozen v7.1 model, for that visitor only:
    - It runs in the visitor's browser and fetches straight from Arctic Shift. Nothing is sent to us, stored, logged,
      listed or published, and the username never goes into the page URL.
@@ -66,8 +74,7 @@ cannot run commands. To keep the two from overwriting each other:
 7. **Servers serve only status folders.** Progress and status servers serve only their own status folder
    (`python3 -m http.server --directory <dir>`), never a data folder. Current ports: 8765 dgg_progress,
    8766 orl_progress, 8767 dgg_live_status.
-8. **Standing service: dgg-live** (systemd --user, unit copy in ops/laptop/dgg-live.service). Restart it after any
-   change to scripts/dgg_live_logger.py, then check that status.json shows plausible messages per minute and far
-   fewer distinct users than messages.
+8. **Standing services.** dgg-live moved to dgg-chat-site on Nov 19 2026 (see its CLAUDE.md). Here:
+   `socialscope-site.timer` (unit copies in ops/laptop/) and, once the Bluesky pilot passes, `bsky-recorder`.
 9. **Say how jobs ended.** When you finish or stop a job, say so in STATUS.txt and jobs.tsv in plain terms (done /
    stopped / failed, and why), so the next session doesn't have to guess.

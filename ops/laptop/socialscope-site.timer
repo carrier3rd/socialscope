@@ -1,0 +1,9 @@
+[Unit]
+Description=Publish the socialscope site every 15 minutes (a reversed Bot Bouncer listing comes off at the next run)
+
+[Timer]
+OnCalendar=*:07/15
+Persistent=true
+
+[Install]
+WantedBy=timers.target

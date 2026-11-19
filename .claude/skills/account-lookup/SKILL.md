@@ -66,7 +66,7 @@ lookup can't tell whether an account is suspended right now, and it misses anyth
 
 ## Site upkeep
 
-- `ops/publish_site.sh` copies the Python modules into the site's `py/socialscope/` on every publish. If
+- `ops/publish_socialscope_site.sh` copies the Python modules into the site's `py/socialscope/` on every publish. If
   `lookup_core.py` gains an import from the package, add that module to the copy list there and to `PY_FILES` in
   `lookup.js`.
 - After re-exporting the model, commit `site/public/lookup/model.json`.

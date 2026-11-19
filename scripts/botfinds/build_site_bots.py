@@ -1,6 +1,6 @@
 """Public list of bots socialscope found and Bot Bouncer then banned (Path 1, build step 3). Written Nov 11, 2026.
 
-Called by ops/publish_site.sh on every rebuild. Writes <out>/botfinds.json. The file is always written, with an empty
+Called by ops/publish_socialscope_site.sh on every rebuild (ops/publish_site.sh until the Nov 19 2026 split). Writes <out>/botfinds.json. The file is always written, with an empty
 list when nothing qualifies, so a listing Bot Bouncer reverses comes off the site at the next rebuild. The site's
 Bots tab stays hidden while the list is empty.
 

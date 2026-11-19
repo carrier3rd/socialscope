@@ -140,12 +140,15 @@
       "What I saw myself: [describe what you checked on the account]",
       "Checked with https://carrier3rd.github.io/socialscope/lookup.html (a detector lead, not proof).",
     ].join(String.fromCharCode(10));
+    // Nov 19 2026: Bot Bouncer takes link posts to the profile (per the r/BotBouncer sidebar). old.reddit's submit
+    // page reliably prefills url and title; the visitor still has to click Post, so nothing is sent without them.
+    const prof = "https://www.reddit.com/user/" + user;
+    const submitUrl = "https://old.reddit.com/r/BotBouncer/submit?url=" + encodeURIComponent(prof) + "&title=" + encodeURIComponent("u/" + user);
     return `
 <div class="card lk-report">
   <h2>Think it's a bot? Report it to Bot Bouncer</h2>
-  <p class="note">A high rating is a lead, not proof, and real people get flagged too. Open the account and read some of its posts first. If you still think it's a bot, report it to <a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">Bot Bouncer</a>, following the subreddit's instructions for submitting an account. Their volunteers decide. Here's a note you can paste with your report; fill in what you saw yourself.</p>
-  <textarea class="lk-note" rows="5" spellcheck="false" aria-label="Report note">${esc(note)}</textarea>
-  <div class="lk-acts"><button type="button" class="lk-copy">Copy note</button><a href="https://www.reddit.com/user/${encodeURIComponent(user)}" rel="noopener nofollow">Open u/${esc(user)} on Reddit</a><a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">Go to r/BotBouncer</a></div>
+  <p class="note">A high rating is a lead, not proof, and real people get flagged too. Open the account and read some of its posts first. If you still think it's a bot, submit it to <a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">Bot Bouncer</a>: the button below opens a Reddit post on r/BotBouncer with a link to the profile filled in, and you click Post. To keep you anonymous, Bot Bouncer removes your post and replaces it with one from its own bot. Accounts it can't classify right away go to its moderators for review, and Bot Bouncer lets you explain your reasons in the post body, so paste the note below there (if the form shows no body box, keep it for your own records). Their first rule is to report in good faith: only accounts you genuinely think are bots, never someone you just disagree with.</p>  <textarea class="lk-note" rows="5" spellcheck="false" aria-label="Report note">${esc(note)}</textarea>
+  <div class="lk-acts"><a class="lk-submit" href="${submitUrl}" target="_blank" rel="noopener nofollow">Submit u/${esc(user)} to Bot Bouncer</a><a href="https://www.reddit.com/user/${encodeURIComponent(user)}" target="_blank" rel="noopener nofollow">Open u/${esc(user)} on Reddit</a><button type="button" class="lk-copy">Copy note</button></div>
 </div>`;
   }
 

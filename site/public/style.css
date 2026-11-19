@@ -137,3 +137,8 @@ h2 { font-size: 16px; font-weight: 600; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .lk-fill { animation: none; transition: none; } }
 .lk-bartxt { color: var(--muted); font-size: 13px; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
 .lk-s li.ok, .lk-s li.warn { color: var(--fg); }   /* the site has global .ok/.warn text colors; signal text stays in ink */
+.lk-report a { color: var(--s2); }
+.lk-note { width: 100%; box-sizing: border-box; font: 13px/1.45 ui-monospace, Consolas, monospace; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px; resize: vertical; margin: 6px 0 10px; }
+.lk-acts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.lk-copy { font: inherit; padding: 7px 14px; border: 0; border-radius: 6px; background: var(--s2); color: #fff; cursor: pointer; }

@@ -130,6 +130,25 @@
   // ---------- card
   const pc = (v, d = 0) => (100 * v).toFixed(d) + "%";
   const off = (o) => "UTC" + (o >= 0 ? "+" : "−") + Math.abs(o);
+  // Report box (Nov 19 2026): at rating 7+ (the 2% line), a ready-to-copy note the visitor can take to Bot Bouncer
+  // themselves. It is built and copied in the browser only; nothing is sent to this site, and we never submit.
+  function report(user, R, warns) {
+    const note = [
+      `Suspected bot: u/${user} (https://www.reddit.com/user/${user})`,
+      `The socialscope bot detector (v7.1) rated it ${R.rating_text}/10, a higher score than ${pc(R.control_pct)} of ordinary accounts in its test set.` +
+        (warns.length ? ` Signals: ${warns.join("; ")}.` : ""),
+      "What I saw myself: [describe what you checked on the account]",
+      "Checked with https://carrier3rd.github.io/socialscope/lookup.html (a detector lead, not proof).",
+    ].join(String.fromCharCode(10));
+    return `
+<div class="card lk-report">
+  <h2>Think it's a bot? Report it to Bot Bouncer</h2>
+  <p class="note">A high rating is a lead, not proof, and real people get flagged too. Open the account and read some of its posts first. If you still think it's a bot, report it to <a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">Bot Bouncer</a>, following the subreddit's instructions for submitting an account. Their volunteers decide. Here's a note you can paste with your report; fill in what you saw yourself.</p>
+  <textarea class="lk-note" rows="5" spellcheck="false" aria-label="Report note">${esc(note)}</textarea>
+  <div class="lk-acts"><button type="button" class="lk-copy">Copy note</button><a href="https://www.reddit.com/user/${encodeURIComponent(user)}" rel="noopener nofollow">Open u/${esc(user)} on Reddit</a><a href="https://www.reddit.com/r/BotBouncer/" rel="noopener">Go to r/BotBouncer</a></div>
+</div>`;
+  }
+
   function card(user, R) {
     const th = R.thresholds, rh = R.rhythm, de = R.desc;
     const lp = (x) => Math.max(0, Math.min(100, 25 * (Math.log10(Math.max(x, 1e-4)) + 4)));
@@ -154,7 +173,9 @@
           : R.us_presenting ? `${us} of items in US subs, active hours ${tz}. No mismatch.` : `Not US-presenting (${us} of items in US subs), active hours ${tz}.`],
       [R.solicit_handle ? "warn" : "ok", "Contact-handle template", R.solicit_handle ? "Posts push a contact handle." : "None found."],
       [R.solicit_broad ? "warn" : "ok", "Turn to NSFW or solicitation", R.solicit_broad ? "A normal history that turned to NSFW or solicitation posting." : "None found."],
-    ].map(([k, t, d]) => `<li class="${k}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join("");
+    ];
+    const warns = sig.filter(([k]) => k === "warn").map(([, t]) => t.toLowerCase());
+    const sigHtml = sig.map(([k, t, d]) => `<li class="${k}"><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join("");
     const rows = (pairs) => pairs.map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${pc(v)}</td></tr>`).join("");
     const mx = Math.max(1, ...rh.hist);
     const q = rh.quiet_start;
@@ -170,9 +191,9 @@
   <div class="lk-ends"><span>Ordinary</span><span>Flag lines at 5, 7 and 9</span><span>Strict flag</span></div>
   <p class="lk-v lk-${R.tone}">${esc(R.verdict)}</p>
   <p class="note">Detector score ${R.score.toFixed(4)}: higher than ${pc(R.control_pct)} of ${R.control_n} ordinary accounts in our test set. Rule flags: ${esc(R.flag_list || "none")}.</p>
-</div>
+</div>${R.rating >= 7 ? report(user, R, warns) : ""}
 <div class="grid">
-  <div class="card"><h2>Signals</h2><ul class="lk-s">${sig}</ul><p class="note">Only the detector score sets the rating. These signals are for you to weigh.</p></div>
+  <div class="card"><h2>Signals</h2><ul class="lk-s">${sigHtml}</ul><p class="note">Only the detector score sets the rating. These signals are for you to weigh.</p></div>
   <div class="card"><h2>Top subreddits</h2><table class="tbl lk-t">${rows(de.top_subs.map(([k, v]) => ["r/" + k, v]))}</table></div>
   <div class="card"><h2>Active hours (UTC)</h2><div class="lk-hrs">${bars}</div><div class="lk-hl"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>
     <p class="note">Lighter bars are the quietest 6 hours. Time-zone estimate: <b>${esc(tz)}</b>.</p></div>
@@ -216,6 +237,12 @@
       prog(100, "Done");
       bar.hidden = true;
       out.innerHTML = card(user, res);
+      const cp = out.querySelector(".lk-copy");
+      if (cp) cp.addEventListener("click", async () => {
+        const ta = out.querySelector(".lk-note");
+        try { await navigator.clipboard.writeText(ta.value); } catch (e) { ta.select(); document.execCommand("copy"); }
+        cp.textContent = "Copied"; setTimeout(() => { cp.textContent = "Copy note"; }, 2000);
+      });
       say(`Done. Data from Arctic Shift, read ${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC.`);
     } catch (e) {
       bar.hidden = true;

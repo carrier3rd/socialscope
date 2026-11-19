@@ -46,6 +46,16 @@ cannot run commands. To keep the two from overwriting each other:
      If the bar has not passed, or later fails, nothing goes up this way.
    - Packets, review notes and the submission tracker contain usernames: they live in ~/socialscope_data/botfinds/
      and are never committed.
+   **Lookup tab (added Nov 13 2026 by the user).** The public site may have a lookup that scores one account the
+   visitor types, with the frozen v7.1 model, for that visitor only:
+   - It runs in the visitor's browser and fetches straight from Arctic Shift. Nothing is sent to us, stored, logged,
+     listed or published, and the username never goes into the page URL.
+   - The result is a score and a 1-10 rating against the flag lines, worded as a lead ("flagged at the strict line,
+     a lead for review, not proof"), never "bot". It isn't a socialscope finding and doesn't put anything on the Bots tab.
+   - No Reddit official API (decided Nov 13 2026 by the user). Reddit requires approval before any API use (its
+     Responsible Builder Policy), so lookups use Arctic Shift only. Don't add Reddit API calls or sign-in.
+   - The site never shows a precomputed result for any account. Our own lookups (scripts/lookup.py) stay private in
+     ~/socialscope_data/lookups/.
 6. **Long jobs.** Every long job runs under nohup with systemd-inhibit, uses absolute paths, gets a line in
    ~/socialscope_data/jobs.tsv, and writes progress where status.sh can see it. For "wait until job X ends" loops,
    use a PID file or a pattern anchored to the start of the command line, e.g.

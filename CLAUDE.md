@@ -1,9 +1,9 @@
 # CLAUDE.md
 
-The full working rules for this repository are kept in a private companion repository, cloned next to this one at
-`~/socialscope-private`. The line below loads them when that clone exists:
+The full working rules for this repository are kept in a private companion repository, cloned next to this one (`../socialscope-private`; on the laptop
+`~/socialscope-private`). The line below loads them when that clone exists:
 
-@~/socialscope-private/CLAUDE.md
+@../socialscope-private/CLAUDE.md
 
 If they did not load, clone `socialscope-private` before changing anything here. Public summary: predictions are committed
 before the data they predict is read (`docs/*-predictions.md`); an existing prediction is never edited, only

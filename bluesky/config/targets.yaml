@@ -1,0 +1,103 @@
+# Bluesky politics module: targets and limits. Spec: docs/BLUESKY_POLITICS_SPEC.md section 6.
+# Every DID below was resolved on Nov 19 2026 through public.api.bsky.app (resolveHandle + getProfiles).
+# `appview.py resolve` re-resolves every handle and fails if a DID has changed. All joins use DIDs.
+#
+# Target accounts are listed here as collection config. Nothing on Bluesky is named in outputs yet
+# (the owner, Nov 19 2026): status files, logs and reports carry counts or hashed ids only.
+
+window:
+  # the owner, Nov 19 2026: the test window starts the day the recorder passes its 24-hour pilot and runs
+  # 3 weeks. The laptop session fills both dates in when the pilot passes. Pilot days are development data.
+  start: null
+  end: null
+  days: 21
+
+sides:
+  # All ten verified by Bluesky on Nov 19 2026; 105k to 2.2M followers.
+  progressive:
+    - {handle: aoc.bsky.social,            did: "did:plc:p7gxyfr5vii5ntpwo7f6dhe2"}
+    - {handle: meidastouch.com,            did: "did:plc:xjc7mkotpenvhh6ffewkdpyn"}
+    - {handle: atrupar.com,                did: "did:plc:4llrhdclvdlmmynkwsmg5tdc"}
+    - {handle: sanders.senate.gov,         did: "did:plc:upw5n2uwhzubjajdtqaufsek"}
+    - {handle: warren.senate.gov,          did: "did:plc:ornpixmpy5ts36lh7hmi7wkp"}
+    - {handle: schumer.senate.gov,         did: "did:plc:zlgotdjaxzuhw4nefvkxxvxa"}
+    - {handle: governor.ca.gov,            did: "did:plc:mojhr33bx3rw4dxxpehd32qz"}
+    - {handle: hcrichardson.bsky.social,   did: "did:plc:wpj5z24vsmik5ocqjybwjpso"}
+    - {handle: ronfilipkowski.bsky.social, did: "did:plc:t6ubj2wlhc34awzcymh3qpur"}
+    - {handle: chrislhayes.bsky.social,    did: "did:plc:e62gb2ushvtvjvqcbrxeaw2n"}
+  # CANDIDATES, not yet confirmed by the owner. This side is thin on Bluesky: 400 to 16,500 followers on Nov 19,
+  # against 105k to 2.2M above. The first eight were verified by Bluesky on Nov 19; nypost.com was not.
+  # The spec's whitehouse.gov resolves to this DID, but the account's own handle is whitehouse-47.bsky.social.
+  # Left out for having 5 or fewer posts: State, Treasury, Transportation, Commerce, Education.
+  government_right:
+    - {handle: whitehouse-47.bsky.social,    did: "did:plc:iw2wxg46hm4ezguswhwej6t6", alias: whitehouse.gov}
+    - {handle: homelandgov.bsky.social,      did: "did:plc:b2ecyhl2z2tro25ltrcyiytd"}
+    - {handle: deptofwar.bsky.social,        did: "did:plc:h2iujdjlry6fpniofjtiqqmb"}
+    - {handle: hhsofficial.bsky.social,      did: "did:plc:fhnl65q3us5evynqc4f2qak6"}
+    - {handle: dol.gov,                      did: "did:plc:wrz4athzuf2u5js2ltrktiqk"}
+    - {handle: deptvetaffairs.bsky.social,   did: "did:plc:3mqcgvyu4exg3pkx4bkfppih"}
+    - {handle: deptofinterior.bsky.social,   did: "did:plc:rlymk4d5qmq5udjdznojmvel"}
+    - {handle: houserepublicans.bsky.social, did: "did:plc:yk75mv7dh42cu4bp2r5777ah"}
+    - {handle: nationalreview.bsky.social,   did: "did:plc:wjta7o5uszx7zkukisqlknho"}
+    - {handle: thefp.com,                    did: "did:plc:cjhcn6w72ovtxfzpvcuk4gwz"}
+    - {handle: nypost.com,                   did: "did:plc:ck7aajho5ziqo6lrs64rm4oc"}
+
+calibration:
+  labelers:
+    bluesky_mod:
+      did: "did:plc:ar7c4by46qjdydhdevvrndac"      # moderation.bsky.app
+      host: mod.bsky.app                           # from plc.directory, Nov 19 2026
+      # Only these values are written to disk; every other value is counted by month and dropped.
+      keep_vals: ["spam", "impersonation", "!takedown"]
+    skywatch:
+      did: "did:plc:e4elbtctnfqocyfcml6h2lf7"      # skywatch.blue
+      host: ozone.skywatch.blue                    # from plc.directory, Nov 19 2026
+      # The spec's behavioral whitelist. Skywatch also publishes political and identity values (maga-trump,
+      # hammer-sickle, terf-gc and others); those are never written to disk, so faction can't leak into labels.
+      # Of the spec's list, Skywatch declared these on Nov 19 2026: suspect-inauthentic, platform-manipulation,
+      # follow-farming, bulk-following, amplifier, engagement-abuse, inauthentic-fundraising, spam.
+      # repetitive-domain-spam-* is not declared today; the prefix is kept for older labels.
+      keep_vals: ["suspect-inauthentic", "platform-manipulation", "follow-farming", "bulk-following",
+                  "amplifier", "engagement-abuse", "inauthentic-fundraising", "spam"]
+      keep_prefixes: ["repetitive-domain-spam-"]
+  # antibot4navalny (did:plc:6vblwh2edno4ayc2mku72r7e) is NOT a labeler: its DID document has no labeler
+  # service and its profile says labeler: false. It publishes 7 lists. Whether list membership counts as
+  # Tier A (the spec says its "labels" do, and also that community lists are Tier C) is the owner's decision.
+  # Nothing reads those lists until then.
+  list_sources:
+    antibot4navalny: {did: "did:plc:6vblwh2edno4ayc2mku72r7e", tier: undecided}
+  extra_known_bad: known_bad/roska_bridge.csv      # under the data folder; hand-entered, never committed
+
+controls:
+  self_labeled_bots: true
+  verified_accounts: true
+
+limits:
+  max_repliers_per_post: 2000
+  history_posts_per_account: 1000      # newest 1,000 top-level posts ending at the anchor (the Reddit cap)
+  history_replies_per_account: 1000    # and newest 1,000 replies ending at the anchor
+  target_accounts_total: 5000
+  max_replier_set: 200000              # the recorder stops adding repliers past this and says so in status
+
+collect:
+  jetstream_hosts: [jetstream1.us-west.bsky.network, jetstream2.us-east.bsky.network]
+  wanted_collections:
+    - app.bsky.feed.post
+    - app.bsky.feed.like
+    - app.bsky.feed.repost
+    - app.bsky.graph.follow
+    - app.bsky.graph.block
+    - app.bsky.graph.listitem
+  appview: https://public.api.bsky.app
+  plc: https://plc.directory
+  constellation: https://constellation.microcosm.blue
+  pds_fallback: https://bsky.social
+  # Constellation asks for a project name and a contact in the User-Agent. No contact is included until
+  # the owner chooses one.
+  user_agent: "socialscope-bluesky/0.1 (read-only academic research)"
+  # Requests per second, per host. Set low on purpose; the pilot's request log shows whether they can rise.
+  rate:
+    appview: 4.0
+    plc: 1.0
+    constellation: 0.5
+    pds: 2.0

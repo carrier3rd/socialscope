@@ -1,0 +1,9 @@
+# Bluesky collectors (Phase 1). Own venv: ~/socialscope_data/bskyenv (see bluesky/RUNBOOK.md).
+# Versions installed and tested by the cloud session on Python 3.13, Nov 19 2026. All three publish
+# cp314 manylinux wheels (checked with pip download --python-version 3.14), so the laptop's Python 3.14
+# should not need a compiler. websockets 17.4 is the version liveenv already runs.
+# HTTP uses the standard library, so there is no httpx. pandas, pyarrow, duckdb and scikit-learn are for
+# Phase 2 on and will be pinned when that code exists.
+websockets==17.4
+PyYAML==6.0.3
+cbor2==6.3.0

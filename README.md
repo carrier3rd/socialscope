@@ -20,6 +20,7 @@ It is also packaged as a Claude skill (`SKILL.md`). With the skill installed, Cl
 | `socialscope/bundles.py`, `positions.py` | Opinion bundles: which positions the same accounts hold, who carries them between subreddits, seeder/amplifier pairs. |
 | `scripts/` | Command-line versions: coordination networks, brigading tests, blind stance coding, topics, sentiment, calibration. |
 | `docs/` | Write-ups of the October 2026 study. |
+| `archive/` | Finished one-off scripts, kept so published results can be rerun (see archive/README.md). |
 | `SKILL.md` | Full method, rules and thresholds, written for Claude but readable as a manual. |
 
 ## Ground rules

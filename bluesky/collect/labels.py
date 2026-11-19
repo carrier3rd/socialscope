@@ -27,6 +27,7 @@ import collections
 import gzip
 import io
 import json
+import signal
 import sys
 from pathlib import Path
 
@@ -109,6 +110,10 @@ async def replay(host, sink, user_agent, quiet=30, max_frames=0):
 
 
 def main():
+    # Fixed Nov 19 2026 (laptop session): a plain kill (SIGTERM) ended the process without sink.close(), so the
+    # gzip member lost its trailer and later appends would be unreadable. SIGTERM now takes the same path as
+    # Ctrl-C: KeyboardInterrupt, the finally block closes the sink (flush, trailer, cursor), then exit.
+    signal.signal(signal.SIGTERM, signal.default_int_handler)
     ap = argparse.ArgumentParser()
     ap.add_argument("--labeler", action="append", help="name from targets.yaml (default: all)")
     ap.add_argument("--quiet", type=int, default=30)

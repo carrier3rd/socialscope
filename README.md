@@ -118,3 +118,9 @@ No Reddit data, username lists or hashing salts are in this repository, and `.gi
 ## License
 
 No license yet. All rights reserved by the author until one is chosen.
+
+## Not in this repository
+
+Working rules, runbooks, laptop service files and internal planning notes are kept in a private companion
+repository (since Nov 19, 2026). Everything needed to run the tools and check the published results is here: the
+code, tests, the site, the method guide, and every predictions and results file.

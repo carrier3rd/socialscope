@@ -21,7 +21,7 @@ Stop and ask the owner if either is missing:
 1. `docs/bluesky-politics-predictions.md` is **committed**. `git log --oneline -1 -- docs/bluesky-politics-predictions.md`
    must print a commit. Nothing below reads data until it does (CLAUDE.md rule 3). `pilot_check.py` refuses to run
    without it.
-2. The owner has confirmed the `government_right` list in `bluesky/config/targets.yaml`. It is marked CANDIDATES.
+2. The `government_right` list in `bluesky/config/targets.yaml` says "Confirmed by the owner" (it does since Nov 19).
 
 ## Steps
 

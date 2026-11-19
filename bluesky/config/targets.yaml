@@ -25,7 +25,7 @@ sides:
     - {handle: hcrichardson.bsky.social,   did: "did:plc:wpj5z24vsmik5ocqjybwjpso"}
     - {handle: ronfilipkowski.bsky.social, did: "did:plc:t6ubj2wlhc34awzcymh3qpur"}
     - {handle: chrislhayes.bsky.social,    did: "did:plc:e62gb2ushvtvjvqcbrxeaw2n"}
-  # CANDIDATES, not yet confirmed by the owner. This side is thin on Bluesky: 400 to 16,500 followers on Nov 19,
+  # Confirmed by the owner on Nov 19 2026. This side is thin on Bluesky: 400 to 16,500 followers on Nov 19,
   # against 105k to 2.2M above. The first eight were verified by Bluesky on Nov 19; nypost.com was not.
   # The spec's whitehouse.gov resolves to this DID, but the account's own handle is whitehouse-47.bsky.social.
   # Left out for having 5 or fewer posts: State, Treasury, Transportation, Commerce, Education.

@@ -1,6 +1,6 @@
 # Israel/Jewish control conspiracy in chat, and its timing against Hasan's speech, Nov 3-10 2026: results
 
-Predictions: `hasan-israel-control-conspiracy-predictions.md` (commit 7972dda, Nov 12 13:53 ET, before coding). Run
+Predictions: `hasan-israel-control-conspiracy-predictions.md` (commit a54ca5f, Nov 12 13:53 ET, before coding). Run
 Nov 12 on the laptop; script and per-item codes in `~/socialscope_data/as_coding/cc_*` (not committed). Chat results
 are aggregates only. Hasan's own lines are quoted because the question is about his public on-stream speech.
 

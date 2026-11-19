@@ -8,3 +8,8 @@ timestamps that prove predictions came before their data still hold.
 Commit ids cited in the docs were updated to the new ids in the commit that added this file. An id written in a
 results file that no longer matches a commit here is an old id from before the rewrite. The old-to-new map is kept
 privately by the owner and can be checked on request.
+
+**Second rewrite, later on Nov 19 2026.** Also at the owner's request: one reference document and one glossary
+clause that repeated unverified claims about a private person were removed from every commit, and the internal
+working files moved to a private companion repository. Commit ids changed again; cited ids were updated in the
+commit that added this paragraph.

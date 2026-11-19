@@ -1,6 +1,6 @@
 # Account lookup: results
 
-Predictions: `docs/lookup-predictions.md` (commit 31417f6, written before the pull). Script: `scripts/lookup.py`.
+Predictions: `docs/lookup-predictions.md` (commit 80aa244, written before the pull). Script: `scripts/lookup.py`.
 
 ## acct_222078e054 (Nov 13, 2026)
 

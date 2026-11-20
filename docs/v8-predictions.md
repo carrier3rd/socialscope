@@ -73,3 +73,9 @@ fresh test of whichever model is live; Nov 10-16 is not reused as a test.
 ## Scoring
 
 Each prediction is a hit or a miss; rates get 95% Wilson intervals; misses are reported. Usernames stay private.
+
+## Addendum, Nov 20 2026, before the young-control sample is drawn
+
+- The young-control histories are pulled with an end date of Nov 10, 2026 (Eastern, exclusive), so they hold
+  nothing from the Nov 10-16 week that has already been read. Accounts in the Nov 10-16 bot check are excluded from
+  the draw. Selection script: `scripts/v8_young_controls.py`.

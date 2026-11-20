@@ -27,7 +27,7 @@ reports are kept outside the public repo.
 | Cheap uncertainty gates match complex adaptive-retrieval pipelines on single-hop QA (1.6–1.8 LM calls vs 4.5–55) | Moskvoretskii et al., ACL 2025 | V |
 | Multi-annotator prediction spread tracks human disagreement better than softmax | Davani, Díaz & Prabhakaran, TACL 2022 | V |
 | Claude API returns no token logprobs | docs.claude.com (OpenAI-compat endpoint: logprobs ignored / empty) | V (checked 2026-11-12) |
-| Gemini label-token logprobs: returned by `gemini-4-hydrogen`; "Logprobs is not enabled" on gemini-flash-latest, flash-lite-latest, 3-flash-preview, 3.1-flash-lite, 3.5-flash(-lite), 3.6/3.7/3.8-flash; Pro models and gemini-4-argon/carbon untested (quota 429 on this key) | live API calls, 2026-11-12 | V (this key; recheck per model) |
+| Gemini label-token logprobs: `gemini-4-hydrogen` returned them on 2026-11-12 to 11-19, then refused ("Logprobs is not enabled for this model") from 2026-11-20; every other Gemini model tested on 2026-11-12 refused. Logprobs can be withdrawn without notice | live API calls, 2026-11-12 to 11-20 | V (this key) |
 
 ## Picking the context
 | Claim | Source | Status |

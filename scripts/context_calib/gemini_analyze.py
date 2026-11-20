@@ -39,7 +39,8 @@ P(f"   replies with TV shift > 0.5: {sum(x > 0.5 for x in tr)}; placebo: {sum(x 
 fl = [i for i in reply if lab("C0",1,i) and lab("C1",1,i) and lab("C0",1,i) != lab("C1",1,i)]
 nf = [i for i in reply if lab("C0",1,i) and lab("C1",1,i) and lab("C0",1,i) == lab("C1",1,i)]
 mf = st.mean(abs(cxmi(i)) for i in fl) if fl else float("nan"); mn = st.mean(abs(cxmi(i)) for i in nf) if nf else float("nan")
-P(f"G4 mean |P-CXMI|: flipped {mf:.2f} (n {len(fl)}), not flipped {mn:.2f} (n {len(nf)})")
+if not any(R.get(("C1",1,i),{}).get("dist") for i in fl+nf): P("G4: not scorable (no C1 logprobs after the Nov 20 cutoff)")
+else: P(f"G4 mean |P-CXMI|: flipped {mf:.2f} (n {len(fl)}), not flipped {mn:.2f} (n {len(nf)})")
 P("   transitions:", dict(Counter(f"{lab('C0',1,i)}->{lab('C1',1,i)}" for i in fl)))
 cl = {int(r["item"]): r["code"] for r in csv.DictReader(open(os.path.join(d, "runs", "C1_r1_codes.csv")))}
 both = [i for i in items if lab("C1",1,i) and i in cl]

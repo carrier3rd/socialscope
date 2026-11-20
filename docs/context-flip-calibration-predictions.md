@@ -70,3 +70,14 @@ The free-tier key allows about 20 `gemini-4-hydrogen` calls a day. At the user's
 already made (nothing analysed). Consequences for the Gemini predictions: G2 (rerun noise) and G3 (placebo
 comparison) are not scorable; G1, G4, G5 (on the 113 replies), G6 and G7 are scored as written. G1's flip rate has
 no Gemini noise floor of its own; the Claude rerun noise (4.4-7.1%) is the reference.
+
+## Addendum 2026-11-20: Gemini arm continues without logprobs (before the remaining C1 calls)
+On 2026-11-20 `gemini-4-hydrogen` began refusing every request with "Logprobs is not enabled for this model" (20
+calls, all C1; error rows set aside, not used). At the user's choice the remaining C1 run-1 calls (105 of 113) are
+made with the same model, prompt and constrained P/A/B/N answer, but without requesting logprobs. Status by
+prediction:
+- G1 (flip rate), G5 (Gemini-Claude agreement, on the 113 replies) and G7 (C0 uncertainty, measured from C0
+  logprobs recorded before the cutoff, vs C1 label flips) are scored as written.
+- G6 is scored on labels only (whether Gemini's C1 label is P), not on p(P).
+- G4 (P-CXMI) is not scorable: it needs C1 label probabilities.
+- 8 C1 items were coded with logprobs before the cutoff; only their labels are used, same as the rest.

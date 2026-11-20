@@ -23,7 +23,7 @@ def prompt(it, cond):
     return s
 def call(text):
     body = json.dumps({"contents": [{"parts": [{"text": text}]}],
-                       "generationConfig": {"responseMimeType": "text/x.enum", "responseSchema": {"type": "STRING", "enum": ["P", "A", "B", "N"]}, "thinkingConfig": {"thinkingLevel": "low"}, "responseLogprobs": True, "logprobs": 5, "maxOutputTokens": 4096}})
+                       "generationConfig": {"responseMimeType": "text/x.enum", "responseSchema": {"type": "STRING", "enum": ["P", "A", "B", "N"]}, "thinkingConfig": {"thinkingLevel": "low"}, "maxOutputTokens": 4096}  # Nov 20: logprobs dropped, model stopped allowing them})
     for attempt in range(8):
         p = subprocess.run(["curl", "-sS", "--max-time", "120", "-H", "Content-Type: application/json",
                             f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent",

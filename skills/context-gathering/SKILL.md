@@ -69,8 +69,9 @@ Ask the coder for, in one call:
 5. Spread across repeated samples or coders (Davani et al. 2022: multi-prediction spread tracks human disagreement
    better than one model's confidence). Count it only above the measured rerun noise floor (4-7% in the socialscope
    calibration).
-6. Gemini/open models only: high token entropy on the label. **Claude returns no logprobs**; of the Gemini models tested
-   on 2026-11-12 only `gemini-4-hydrogen` returned them, so test one live call per model before relying on it.
+6. Gemini/open models only: high token entropy on the label. **Claude returns no logprobs**; Gemini can withdraw them
+   without notice (`gemini-4-hydrogen` returned them Nov 12-19 2026, then stopped), so test one live call per model
+   before each run and keep rerun disagreement as the main uncertainty signal.
 
 ### Tier 2: targeted fetch, then re-code
 

@@ -21,7 +21,13 @@ mkdir -p "$SITE/data"
 python3 -I "$REPO/scripts/botfinds/build_site_bots.py" --out "$SITE/data"
 cd "$SITE"
 git add -A
-if git diff --cached --quiet; then echo "socialscope site: no changes"; exit 0; fi
+# Commit only when something other than botfinds.json's "updated" timestamp changed (Nov 26 2026: the timestamp alone
+# made a commit every 15 minutes, 96 a day). The Bots tab then shows when the bot list last changed. A reversed
+# listing still comes off at the next run: it changes "bots", not just the timestamp.
+if git diff --cached --quiet -I '^ *"updated": '; then
+  git reset -q && git checkout -q -- .     # working tree back to what is published
+  echo "socialscope site: no changes"; exit 0
+fi
 git commit -q -m "Site update $(date -u +%Y-%m-%dT%H:%MZ)"
 git push -q origin gh-pages
 echo "socialscope site: pushed $(date -u +%FT%TZ)"

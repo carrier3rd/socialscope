@@ -8,8 +8,12 @@
 window:
   # the owner, Nov 19 2026: the test window starts the day the recorder passes its 24-hour pilot and runs
   # 3 weeks. The laptop session fills both dates in when the pilot passes. Pilot days are development data.
-  start: null
-  end: null
+  # Set Nov 26 2026: the pilot passed Nov 20 but the standing recorder was not started until Nov 26 21:59 UTC
+  # (it replayed from Nov 25 ~08 UTC, the oldest Jetstream still held). The window starts on its first full UTC
+  # day; end is 21 days later (exclusive): Nov 27 to Dec 17 inclusive. See the dated addendum in
+  # docs/bluesky-politics-predictions.md.
+  start: 2026-11-27
+  end: 2026-12-18
   days: 21
 
 sides:

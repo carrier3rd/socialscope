@@ -88,3 +88,15 @@ In `docs/bluesky-politics-results.md`: one row per numbered prediction, hit / mi
 the numbers. A prediction with a direction and a range is a hit only if both hold, partial if one does.
 Bootstrap intervals (2,000 resamples over accounts, threshold recomputed in each) on every recall and AUC.
 Misses stay in.
+
+## Addendum, Nov 26 2026 (before any window data exists)
+
+The pilot passed on Nov 20 (pilot_check, all five checks), but the standing recorder was not started then. It was
+installed and started on Nov 26 at 21:59 UTC. Its saved cursor (Nov 20 17:01 UTC) was older than Jetstream's replay
+buffer, so it resumed from the oldest event Jetstream still held, about Nov 25 08:00 UTC: there is no data from
+Nov 20 17:01 to Nov 25 ~08:00 UTC. The terms above say the window starts "the day the recorder passes its 24-hour
+pilot"; read that as the start of continuous recording. **The test window is Nov 27 to Dec 17 2026 (UTC), 21 days**
+(`window` in `bluesky/config/targets.yaml`: start 2026-11-27, end 2026-12-18 exclusive). Week 1 (Nov 27 to Dec 3) is
+the baseline week. Everything before Nov 27 is development data, as the pilot days were. No prediction above is
+changed.
+

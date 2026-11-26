@@ -75,9 +75,11 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(labels.keep("follow-farming", sky["keep_vals"], sky["keep_prefixes"]))
         self.assertTrue(labels.keep("repetitive-domain-spam-x.example", sky["keep_vals"], sky["keep_prefixes"]))
 
-    def test_window_is_unset_until_the_pilot_passes(self):
-        self.assertIsNone(self.cfg["window"]["start"])
-        self.assertEqual(self.cfg["window"]["days"], 21)
+    def test_window_is_the_registered_three_weeks(self):
+        # set Nov 26 2026 after the pilot passed (docs/bluesky-politics-predictions.md addendum)
+        w = self.cfg["window"]
+        self.assertEqual(str(w["start"]), "2026-11-27")
+        self.assertEqual(w["days"], 21)
 
 
 class TestTid(unittest.TestCase):
@@ -175,7 +177,9 @@ class TestRecorder(unittest.TestCase):
         self.assertTrue(files[0].endswith(".jsonl.gz") and files[1].endswith(".jsonl"))
         saved = json.load(open(self.root / "state" / "cursor.json"))
         self.assertEqual(saved["time_us"], fk.T0 + hour + 5)
-        # killed here: no close_session, no close. A new process picks up from the files.
+        # killed here: no close_session. A killed process's files are released; drop the handles the way the OS
+        # would (r.close() writes nothing), or Windows refuses to compress the still-open hour file.
+        r.close()
         r2 = self.rec()
         self.assertEqual(r2.resume_cursor(), fk.T0 + hour + 5 - jetstream.REWIND_US)
         self.assertEqual(r2.seen, {fk.did(1), fk.did(2)})

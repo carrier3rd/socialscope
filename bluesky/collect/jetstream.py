@@ -90,8 +90,8 @@ class Recorder:
         self.clock = clock
         self.repliers = self._load_set("repliers.txt")
         self.seen = self._load_set("seen_authors.txt")
-        self._rep_fh = open(self.state / "repliers.txt", "a", buffering=1)
-        self._seen_fh = open(self.state / "seen_authors.txt", "a", buffering=1)
+        self._rep_fh = open(self.state / "repliers.txt", "a", buffering=1, encoding="utf-8", newline="\n")
+        self._seen_fh = open(self.state / "seen_authors.txt", "a", buffering=1, encoding="utf-8", newline="\n")
         self.hour, self.fh = None, None
         self.cursor = bc.load_json(self.state / "cursor.json", {}).get("time_us")
         self.last_us = None
@@ -126,7 +126,7 @@ class Recorder:
             if self.fh:
                 self.fh.close()
             self.hour = h
-            self.fh = open(self.out / f"{h}.jsonl", "a", buffering=1, encoding="utf-8")
+            self.fh = open(self.out / f"{h}.jsonl", "a", buffering=1, encoding="utf-8", newline="\n")
             self._compress_closed()
         self.fh.write(raw.rstrip("\n") + "\n")
 
@@ -220,7 +220,7 @@ class Recorder:
         if s.get("cursor") and s.get("first_time_us"):
             # seconds between the cursor asked for and the first event received; near 0 means no gap
             s["resume_gap_s"] = round((s["first_time_us"] - s["cursor"]) / 1e6, 1)
-        with open(self.out / "sessions.jsonl", "a", encoding="utf-8") as f:
+        with open(self.out / "sessions.jsonl", "a", encoding="utf-8", newline="\n") as f:
             f.write(json.dumps(s) + "\n")
         self.session = None
         self.save_cursor()
@@ -327,7 +327,10 @@ def main():
     task = loop.create_task(run(rec, cfg["collect"]["jetstream_hosts"], cfg["collect"]["wanted_collections"],
                                 cfg["collect"]["user_agent"], deadline))
     for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, task.cancel)
+        try:
+            loop.add_signal_handler(sig, task.cancel)
+        except NotImplementedError:   # Windows (moved to the PC Nov 26 2026): Ctrl-C still stops it via KeyboardInterrupt
+            pass
     how = "done: time limit reached"
     try:
         loop.run_until_complete(task)

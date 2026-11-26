@@ -52,7 +52,7 @@ def atomic_json(path, obj):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(obj, f)
     os.replace(tmp, path)
 
@@ -134,7 +134,7 @@ class Http:
     def flush(self):
         if self.log_path and self.codes:
             self.log_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.log_path, "a", encoding="utf-8") as f:
+            with open(self.log_path, "a", encoding="utf-8", newline="\n") as f:
                 f.write(json.dumps({"minute": self.minute * 60, "host": self.name, "codes": self.codes}) + "\n")
         self.codes = {}
 

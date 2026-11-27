@@ -24,7 +24,10 @@ Files under <data>/state/:
 Status (<data>/../bluesky_status/status.json): counts only. No DID, handle or text ever goes there.
 
 Resume: on start, and after every drop, it reconnects with cursor = saved cursor minus 5 seconds, so nothing
-is lost and a few seconds are duplicated (normalize dedups on did/collection/rkey/rev). Jetstream replayed
+is lost. Replayed events it already wrote are not written again (Nov 27 2026): it remembers the lines written in the
+last DEDUP_WINDOW_US of event time, seeded at start from the newest hour files, and skips byte-identical ones
+(counted as dup_skipped). A different host sends the same event with its own time_us, so a host switch can still
+repeat an event; normalize dedups on did/collection/rkey/rev for that. A lock file stops a second copy from running. Jetstream replayed
 about 37 hours on Nov 19 2026 (both hosts); an outage longer than the buffer is a real gap and shows up in
 sessions.jsonl.
 
@@ -38,6 +41,7 @@ import asyncio
 import collections
 import datetime as dt
 import gzip
+import hashlib
 import json
 import os
 import shutil
@@ -51,6 +55,7 @@ import bsky_common as bc  # noqa: E402
 
 IDLE_S = 60        # the full network is never silent this long
 REWIND_US = 5_000_000
+DEDUP_WINDOW_US = 300_000_000   # 5 min of event time: covers the rewind plus up to a minute since the last cursor save
 BUFFER_HOURS = 36  # measured replay depth was about 37 h on Nov 19 2026
 
 
@@ -103,6 +108,9 @@ class Recorder:
         self.session = None
         self.started = bc.now_iso()
         self.host = None
+        self.recent = {}                         # blake2b of a written line -> its time_us (DEDUP_WINDOW_US)
+        self.newest_written = 0
+        self._seed_recent()
         self._compress_closed()
 
     def _load_set(self, name):
@@ -112,6 +120,44 @@ class Recorder:
         except FileNotFoundError:
             return set()
 
+    # ---- duplicates ----
+    @staticmethod
+    def _key(raw):
+        return hashlib.blake2b(raw.rstrip("\r\n").encode("utf-8"), digest_size=16).digest()
+
+    def _seed_recent(self):
+        """The lines already written near the saved cursor, so a replay after a restart is not written twice."""
+        if not self.cursor:
+            return
+        lo = self.cursor - REWIND_US - DEDUP_WINDOW_US
+        for h in sorted({hour_of(lo), hour_of(self.cursor)}):
+            for p, op in ((self.out / f"{h}.jsonl.gz", gzip.open), (self.out / f"{h}.jsonl", open)):
+                if not p.exists():
+                    continue
+                try:
+                    with op(p, "rt", encoding="utf-8") as f:
+                        for line in f:
+                            try:
+                                t = json.loads(line).get("time_us")
+                            except json.JSONDecodeError:
+                                continue
+                            if isinstance(t, int) and t >= lo:
+                                self.recent[self._key(line)] = t
+                                self.newest_written = max(self.newest_written, t)
+                except (OSError, EOFError):       # a file cut off by a crash: what was read still counts
+                    pass
+
+    def _seen_before(self, time_us, raw) -> bool:
+        k = self._key(raw)
+        if k in self.recent:
+            return True
+        self.recent[k] = time_us
+        self.newest_written = max(self.newest_written, time_us)
+        if len(self.recent) > 50_000:            # forget lines older than the window
+            lo = self.newest_written - DEDUP_WINDOW_US
+            self.recent = {x: t for x, t in self.recent.items() if t >= lo}
+        return False
+
     # ---- files ----
     def _compress_closed(self):
         for p in self.out.glob("*.jsonl"):
@@ -120,7 +166,11 @@ class Recorder:
                     shutil.copyfileobj(a, b)
                 p.unlink()
 
-    def _write(self, time_us, raw):
+    def _write(self, time_us, raw) -> bool:
+        """Append one kept event to its hour file. False when that exact line was written already (a replay)."""
+        if self._seen_before(time_us, raw):
+            self.counts["dup_skipped"] += 1
+            return False
         h = hour_of(time_us)
         if h != self.hour:
             if self.fh:
@@ -129,6 +179,7 @@ class Recorder:
             self.fh = open(self.out / f"{h}.jsonl", "a", buffering=1, encoding="utf-8", newline="\n")
             self._compress_closed()
         self.fh.write(raw.rstrip("\n") + "\n")
+        return True
 
     # ---- filter ----
     def decide(self, ev):
@@ -183,8 +234,7 @@ class Recorder:
             self.session.setdefault("first_time_us", t)
             self.session["last_time_us"] = t
         why = self.decide(ev)
-        if why:
-            self._write(t, raw)
+        if why and self._write(t, raw):
             self.counts["kept:" + why] += 1
             self.per_min[int(self.clock() // 60)] += 1
             if self.session is not None:
@@ -309,6 +359,25 @@ async def run(rec, hosts, collections_, user_agent, deadline=None):
         delay = min(delay * 2, 300)
 
 
+def single_instance(state_dir):
+    """Hold state/jetstream.lock for the life of the process; None if another recorder holds it. Two copies once
+    wrote every event twice (Nov 27 2026, an orphan left by a killed supervisor)."""
+    state_dir.mkdir(parents=True, exist_ok=True)
+    f = open(state_dir / "jetstream.lock", "a+")
+    try:
+        if os.name == "nt":
+            import msvcrt
+            f.seek(0)
+            msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        f.close()
+        return None
+    return f
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=str(bc.CONFIG))
@@ -316,6 +385,10 @@ def main():
     args = ap.parse_args()
     cfg = bc.load_config(args.config)
     d = bc.data_dir()
+    lock = single_instance(d / "state")
+    if lock is None:
+        print(f"bsky_recorder {bc.now_iso()}: another recorder is running (state/jetstream.lock); exiting", flush=True)
+        sys.exit(3)
     rec = Recorder(d / "raw" / "jetstream", d / "state", bc.status_dir(), bc.targets(cfg),
                    cfg["limits"]["max_replier_set"])
     pid = d / "state" / "jetstream.pid"

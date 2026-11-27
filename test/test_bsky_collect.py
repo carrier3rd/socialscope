@@ -184,17 +184,40 @@ class TestRecorder(unittest.TestCase):
         self.assertEqual(r2.resume_cursor(), fk.T0 + hour + 5 - jetstream.REWIND_US)
         self.assertEqual(r2.seen, {fk.did(1), fk.did(2)})
         r2.open_session("host-b")
-        r2.handle(fk.like(fk.did(2), tp, t=fk.T0 + hour))      # replayed duplicate lands in the same hour
+        r2.handle(fk.like(fk.did(2), tp, t=fk.T0 + hour))      # replayed duplicate: already written, skipped
         r2.handle(fk.delete(fk.did(1), "app.bsky.feed.like", t=fk.T0 + hour + 9))
         r2.close_session("closed")
         sess = [json.loads(x) for x in open(self.root / "raw" / "sessions.jsonl")]
         self.assertEqual(len(sess), 1)                         # the killed session left no line
         self.assertEqual(sess[0]["host"], "host-b")
         self.assertEqual(sess[0]["resume_gap_s"], round((fk.T0 + hour - sess[0]["cursor"]) / 1e6, 1))
-        self.assertEqual(len(self.lines()), 4)
+        self.assertEqual(len(self.lines()), 3)                 # like 1, like 2, the delete: no repeat
+        self.assertEqual(r2.counts["dup_skipped"], 1)
         self.assertIn("&cursor=", jetstream.stream_url("h", ["a.b"], r2.resume_cursor()))
         self.assertNotIn("cursor", jetstream.stream_url("h", ["a.b"], None))
         r2.close()
+
+    def test_replay_in_the_same_session_is_not_written_twice(self):
+        r = self.rec()
+        tp = fk.post_uri(fk.TARGET)
+        r.open_session("host-a")
+        for _ in range(3):                                     # a reconnect replays the rewind window
+            r.handle(fk.like(fk.did(1), tp, t=fk.T0))
+            r.handle(fk.like(fk.did(2), tp, t=fk.T0 + 1))
+        r.handle(fk.like(fk.did(1), tp, t=fk.T0 + 2))          # same account, new event: kept
+        self.assertEqual(len(self.lines()), 3)
+        self.assertEqual(r.counts["dup_skipped"], 4)
+        self.assertEqual(r.counts["kept:points_at_target"], 3)
+        r.close()
+
+    def test_a_second_recorder_cannot_start(self):
+        first = jetstream.single_instance(self.root / "state")
+        self.assertIsNotNone(first)
+        self.assertIsNone(jetstream.single_instance(self.root / "state"))
+        first.close()
+        again = jetstream.single_instance(self.root / "state")
+        self.assertIsNotNone(again)
+        again.close()
 
     def test_old_cursor_is_flagged(self):
         r = self.rec()

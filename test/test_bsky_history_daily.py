@@ -267,6 +267,26 @@ class TestResumeAndDedupe(Base):
         st = self.run_once(FakeNet(self.repos), clock=Clock(later + 3600e6))   # and not again the same day
         self.assertEqual(st["result"]["repulled"], 0)
 
+    def test_a_write_that_fails_halfway_leaves_nothing_normalize_would_read(self):
+        # normalize stages raw/histories/<aa>/*.jsonl.gz while the nightly pull runs (both from 04:30)
+        d = self.data / "raw" / "histories" / "aa"
+        good = records(did(1), 3, T0)
+        hd._write_gz(d / "x.jsonl.gz", good)
+        before = (d / "x.jsonl.gz").read_bytes()
+        with self.assertRaises(TypeError):
+            hd._write_gz(d / "y.jsonl.gz", good + [{"uri": object()}])     # dies after writing some lines
+        self.assertEqual(sorted(p.name for p in d.glob("*.jsonl.gz")), ["x.jsonl.gz"])
+        self.assertEqual((d / "x.jsonl.gz").read_bytes(), before)
+
+    def test_shipped_caps_leave_time_as_the_binding_limit(self):
+        s = hd.settings(bc.load_config())
+        sec_per_request, requests_per_account = 0.57, 56          # the Nov 28 check run (most active repliers)
+        requests_by_time = s["max_minutes"] * 60 / sec_per_request
+        self.assertGreater(s["requests_per_run"], requests_by_time)
+        self.assertGreater(s["accounts_per_run"], requests_by_time / requests_per_account)
+        self.assertLessEqual(s["max_minutes"], 360)                  # owner's window ends 07:00
+        self.assertEqual((s["min_gap_s"], s["stop_after_throttled"]), (0.4, 3))
+
     def test_second_copy_cannot_start(self):
         a = hd.single_instance(self.data / "state")
         self.assertIsNotNone(a)

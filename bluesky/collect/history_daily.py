@@ -37,6 +37,12 @@ Writes only new files; nothing that exists is changed:
   queue state  state/history_daily/window_repliers.json (private)
   status       bluesky_status/histories.json: counts only, no DID, handle or text.
 A lock file (state/history_daily.lock) stops a second copy.
+
+Running next to normalize (the nightly run, 01:00-06:50, overlaps the 04:30 bsky normalize; checked Nov 27 2026):
+normalize reads raw/histories/*/*.jsonl.gz and raw/plc/*/*.json, which this job writes, and nothing under
+histories_daily or state/history_daily. Every file here is written to <name>.tmp and renamed into place
+(_write_gz, bc.atomic_json), and the .tmp names match neither glob, so normalize sees a file whole or not at all;
+a file that lands after normalize listed its folder is staged the next night. Existing files are never deleted.
 """
 import argparse
 import datetime as dt
@@ -55,8 +61,8 @@ import plc  # noqa: E402
 
 POST = "app.bsky.feed.post"
 DAY_US = 86_400_000_000
-DEFAULTS = {"accounts_per_run": 500, "requests_per_run": 20000, "repull_after_days": 14, "min_gap_s": 0.4,
-            "stop_after_throttled": 3, "max_pages": 60, "max_minutes": 165}
+DEFAULTS = {"accounts_per_run": 1200, "requests_per_run": 50000, "repull_after_days": 14, "min_gap_s": 0.4,
+            "stop_after_throttled": 3, "max_pages": 60, "max_minutes": 350}
 
 
 class BudgetExhausted(Exception):

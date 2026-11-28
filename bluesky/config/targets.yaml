@@ -84,16 +84,17 @@ limits:
   max_replier_set: 200000              # the recorder stops adding repliers past this and says so in status
 
 # Daily capped history pull for the window's in-thread repliers (collect/history_daily.py). Approved by the owner
-# Nov 27 2026 as a daily, capped pull. The pilot's 2,245 histories took about 30 PDS requests each, so 500 accounts
-# need about 15,000 requests, roughly two hours at these gaps.
+# Nov 27 2026 as a daily, capped pull; the owner widened the nightly window to 01:00-07:00 the same night. Time is
+# meant to be the binding limit: the check run took ~0.57 s and ~56 requests per account for the most active
+# repliers, so 350 minutes is about 36,000 requests, 650 to 1,200 accounts.
 history_daily:
-  accounts_per_run: 500        # accounts started per run (first pulls before re-pulls)
-  requests_per_run: 20000      # every attempt to any host (PLC and PDS), retries included
+  accounts_per_run: 1200       # accounts started per run (first pulls before re-pulls)
+  requests_per_run: 50000      # every attempt to any host (PLC and PDS), retries included
   repull_after_days: 14        # an account pulled less than this long ago is skipped
   min_gap_s: 0.4               # between any two requests, on top of collect.rate per host
   stop_after_throttled: 3      # accounts in a row a host kept refusing (429/5xx after every retry): stop the run
   max_pages: 60                # listRecords pages per account (100 records each)
-  max_minutes: 165             # no account is started after this; the daily task (01:00) is stopped at 3 hours
+  max_minutes: 350             # no account is started after this (01:00 + 350 min = 06:50); the task stops at 6 h
 
 collect:
   jetstream_hosts: [jetstream1.us-west.bsky.network, jetstream2.us-east.bsky.network]
